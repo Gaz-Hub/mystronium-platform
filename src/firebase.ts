@@ -27,7 +27,7 @@ const validateEnvVars = () => {
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || 'https://mystronium-default-rtdb.firebaseio.com',
     recaptchaSiteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY
   };
 
@@ -54,13 +54,14 @@ const validateEnvVars = () => {
     console.log('🔧 Firebase configuration loaded successfully');
     console.log('🌐 Project ID:', envVars.projectId);
     console.log('🔐 Auth Domain:', envVars.authDomain);
+    console.log('🗄️ Realtime Database:', envVars.databaseURL);
     console.log('🔒 App Check enabled with reCAPTCHA v3');
   }
 
   return true;
 };
 
-// Firebase configuration with europe-west1 region and comprehensive setup
+// Firebase configuration with nam5 region and comprehensive setup
 const getFirebaseConfig = () => {
   const hasValidConfig = validateEnvVars();
 
@@ -74,7 +75,7 @@ const getFirebaseConfig = () => {
       messagingSenderId: '123456789',
       appId: '1:123456789:web:demo',
       measurementId: 'G-DEMO123',
-      databaseURL: 'https://demo.firebaseio.com'
+      databaseURL: 'https://mystronium-default-rtdb.firebaseio.com'
     };
   }
 
@@ -86,7 +87,7 @@ const getFirebaseConfig = () => {
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || 'https://mystronium-default-rtdb.firebaseio.com'
   };
 };
 
@@ -107,7 +108,7 @@ try {
       projectId: firebaseConfig.projectId,
       authDomain: firebaseConfig.authDomain,
       hasApiKey: !!firebaseConfig.apiKey && firebaseConfig.apiKey !== 'demo-api-key',
-      region: 'europe-west2'
+      region: 'nam5'
     });
   }
 
@@ -117,9 +118,9 @@ try {
   storage = getStorage(app);
   realtimeDb = getDatabase(app);
 
-  // Configure Firestore for europe-west2 region
+  // Configure Firestore for nam5 region
   if (db && !import.meta.env.DEV) {
-    // Firestore will use europe-west2 region as configured in Firebase Console
+    // Firestore will use nam5 region as configured in Firebase Console
     // The region is set when creating the database in Firebase Console
   }
 
@@ -141,9 +142,9 @@ try {
     console.warn('⚠️ MYSTRONIUM DIAGNOSTIC: VITE_RECAPTCHA_SITE_KEY not found - App Check disabled');
   }
 
-  // Configure Firestore for europe-west2 region
+  // Configure Firestore for nam5 region
   if (db && !import.meta.env.DEV) {
-    // In production, Firestore will use the europe-west2 region
+    // In production, Firestore will use the nam5 region
     // This is configured in the Firebase Console
   }
 
@@ -156,7 +157,7 @@ try {
       realtimeDb: !!realtimeDb,
       appCheck: !!appCheck
     });
-    console.log('🌍 Region: europe-west2');
+    console.log('🌍 Region: nam5');
   }
 } catch (error) {
   if (import.meta.env.DEV) {
