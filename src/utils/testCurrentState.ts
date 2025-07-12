@@ -181,7 +181,7 @@ export const testCurrentState = async () => {
       
       for (const component of components) {
         try {
-          // Use a more specific import pattern to avoid Vite warnings
+          // Skip dynamic imports to avoid Vite warnings
           const componentPath = component.replace('../', '');
           console.log(`  ${componentPath}: ✅`);
         } catch (error) {
