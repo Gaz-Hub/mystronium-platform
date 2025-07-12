@@ -1,0 +1,70 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // App Check enforcement - all requests must come from verified apps
+    function isAppCheckVerified() {
+      return request.auth != null && request.app != null;
+    }
+    
+    // Admin user check
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email == 'garetharjohns@gmail.com';
+    }
+    
+    // User can access their own files
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Creator can access their own content
+    function isCreator(creatorId) {
+      return request.auth != null && 
+             (request.auth.uid == creatorId || isAdmin());
+    }
+    
+    // Users collection - users can manage their own files
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if isAppCheckVerified() && isOwner(userId);
+    }
+    
+    // Books collection - creators can manage their book files
+    match /books/{bookId}/{allPaths=**} {
+      allow read, write: if isAppCheckVerified() && 
+        (resource.metadata.creatorId == request.auth.uid || isAdmin());
+    }
+    
+    // Artworks collection - creators can manage their artwork files
+    match /artworks/{artworkId}/{allPaths=**} {
+      allow read, write: if isAppCheckVerified() && 
+        (resource.metadata.creatorId == request.auth.uid || isAdmin());
+    }
+    
+    // Voice narrations collection - creators can manage their narration files
+    match /voiceNarrations/{narrationId}/{allPaths=**} {
+      allow read, write: if isAppCheckVerified() && 
+        (resource.metadata.creatorId == request.auth.uid || isAdmin());
+    }
+    
+    // Admin-only collections
+    match /admin/{allPaths=**} {
+      allow read, write: if isAppCheckVerified() && isAdmin();
+    }
+    
+    // System collections - admin only
+    match /system/{allPaths=**} {
+      allow read, write: if isAppCheckVerified() && isAdmin();
+    }
+    
+    // Analytics collection - authenticated users can read, admin can write
+    match /analytics/{allPaths=**} {
+      allow read: if isAppCheckVerified();
+      allow write: if isAppCheckVerified() && isAdmin();
+    }
+    
+    // Default deny all other access
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+} 

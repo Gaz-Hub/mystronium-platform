@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // App Check enforcement - all requests must come from verified apps
+    function isAppCheckVerified() {
+      return request.auth != null && request.app != null;
+    }
+    
+    // Admin user check
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email == 'garetharjohns@gmail.com';
+    }
+    
+    // Creator user check
+    function isCreator() {
+      return request.auth != null && 
+             (request.auth.token.email == 'garetharjohns@gmail.com' || 
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.creator == true);
+    }
+    
+    // User can read/write their own data
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Users collection - locked mode with auth users only
+    match /users/{userId} {
+      allow read: if isAppCheckVerified() && (isOwner(userId) || isAdmin());
+      allow create: if isAppCheckVerified() && isOwner(userId);
+      allow update: if isAppCheckVerified() && isOwner(userId);
+      allow delete: if isAppCheckVerified() && isAdmin();
+    }
+    
+    // Books collection - creators can manage their books
+    match /books/{bookId} {
+      allow read: if isAppCheckVerified() && 
+        (resource.data.creatorId == request.auth.uid || isAdmin());
+      allow create: if isAppCheckVerified() && isCreator();
+      allow update: if isAppCheckVerified() && 
+        (resource.data.creatorId == request.auth.uid || isAdmin());
+      allow delete: if isAppCheckVerified() && 
+        (resource.data.creatorId == request.auth.uid || isAdmin());
+    }
+    
+    // Artworks collection - creators can manage their artworks
+    match /artworks/{artworkId} {
+      allow read: if isAppCheckVerified() && 
+        (resource.data.creatorId == request.auth.uid || isAdmin());
+      allow create: if isAppCheckVerified() && isCreator();
+      allow update: if isAppCheckVerified() && 
+        (resource.data.creatorId == request.auth.uid || isAdmin());
+      allow delete: if isAppCheckVerified() && 
+        (resource.data.creatorId == request.auth.uid || isAdmin());
+    }
+    
+    // Voice narrations collection - creators can manage their narrations
+    match /voiceNarrations/{narrationId} {
+      allow read: if isAppCheckVerified() && 
+        (resource.data.creatorId == request.auth.uid || isAdmin());
+      allow create: if isAppCheckVerified() && isCreator();
+      allow update: if isAppCheckVerified() && 
+        (resource.data.creatorId == request.auth.uid || isAdmin());
+      allow delete: if isAppCheckVerified() && 
+        (resource.data.creatorId == request.auth.uid || isAdmin());
+    }
+    
+    // Admin-only collections
+    match /admin/{document=**} {
+      allow read, write: if isAppCheckVerified() && isAdmin();
+    }
+    
+    // System collections - admin only
+    match /system/{document=**} {
+      allow read, write: if isAppCheckVerified() && isAdmin();
+    }
+    
+    // Analytics collection - authenticated users can read, admin can write
+    match /analytics/{document=**} {
+      allow read: if isAppCheckVerified();
+      allow write: if isAppCheckVerified() && isAdmin();
+    }
+    
+    // Default deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 
