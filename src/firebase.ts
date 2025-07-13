@@ -21,6 +21,7 @@ const validateEnvVars = () => {
     "VITE_RECAPTCHA_SITE_KEY",
   ];
 
+  // For display/debugging only
   const envVars = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -41,8 +42,6 @@ const validateEnvVars = () => {
   console.log("Is development:", import.meta.env.DEV);
   console.log("Is production:", import.meta.env.PROD);
   console.log("All VITE_ env vars:", Object.keys(import.meta.env).filter(key => key.startsWith('VITE_')));
-  
-  // Log each required variable individually
   required.forEach(key => {
     const value = import.meta.env[key];
     console.log(`${key}:`, value ? `${value.substring(0, 10)}...` : 'UNDEFINED');
@@ -51,9 +50,9 @@ const validateEnvVars = () => {
   const missing: string[] = [];
   const placeholderValues: string[] = [];
 
+  // FIX: Validate directly from import.meta.env
   required.forEach((key) => {
-    const value = envVars[key as keyof typeof envVars];
-    
+    const value = import.meta.env[key];
     if (!value) {
       missing.push(key);
       console.log(`❌ Missing: ${key}`);
