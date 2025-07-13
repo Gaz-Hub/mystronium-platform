@@ -40,43 +40,54 @@ const validateEnvVars = () => {
     return (
       !value ||
       value === "your_firebase_api_key_here" ||
-      value.includes("your_")
+      value.includes("your_") ||
+      value === "your-firebase-api-key" ||
+      value === "your-recaptcha-site-key"
     );
   });
 
-  if (missing.length > 0 && import.meta.env.DEV) {
-    console.warn(
-      "⚠️ MYSTRONIUM DIAGNOSTIC: Missing Firebase environment variables:",
-      missing,
-    );
-    console.warn(
-      "📝 Configure your Firebase project at: https://console.firebase.google.com/",
-    );
-    console.warn(
-      "📝 Update .env.local with your Firebase configuration values",
-    );
-    console.warn("🛠️ Running in demo mode with mock services for testing");
-    console.warn("📋 Current environment variables:", envVars);
-    return false;
+  // In development, be more lenient and show warnings
+  if (import.meta.env.DEV) {
+    if (missing.length > 0) {
+      console.warn(
+        "⚠️ MYSTRONIUM DIAGNOSTIC: Missing Firebase environment variables:",
+        missing,
+      );
+      console.warn(
+        "📝 Configure your Firebase project at: https://console.firebase.google.com/",
+      );
+      console.warn(
+        "📝 Update .env.local with your Firebase configuration values",
+      );
+      console.warn("🛠️ Running in demo mode with mock services for testing");
+      console.warn("📋 Current environment variables:", envVars);
+      return false;
+    } else {
+      console.log(
+        "✅ MYSTRONIUM DIAGNOSTIC: All Firebase environment variables present",
+      );
+      console.log("🔧 Firebase configuration loaded successfully");
+      console.log("🌐 Project ID:", envVars.projectId);
+      console.log("🔐 Auth Domain:", envVars.authDomain);
+      console.log("🗄️ Realtime Database:", envVars.databaseURL);
+      console.log("🔒 App Check enabled with reCAPTCHA v3");
+      return true;
+    }
   }
 
-  if (missing.length > 0 && !import.meta.env.DEV) {
+  // In production, be strict and throw errors for missing variables
+  if (missing.length > 0) {
+    console.error(
+      "❌ MYSTRONIUM PRODUCTION ERROR: Missing required Firebase environment variables:",
+      missing,
+    );
+    console.error("🔧 Please set these variables in your Netlify environment variables");
     throw new Error(
       `Missing required Firebase environment variables: ${missing.join(", ")}`,
     );
   }
 
-  if (import.meta.env.DEV) {
-    console.log(
-      "✅ MYSTRONIUM DIAGNOSTIC: All Firebase environment variables present",
-    );
-    console.log("🔧 Firebase configuration loaded successfully");
-    console.log("🌐 Project ID:", envVars.projectId);
-    console.log("🔐 Auth Domain:", envVars.authDomain);
-    console.log("🗄️ Realtime Database:", envVars.databaseURL);
-    console.log("🔒 App Check enabled with reCAPTCHA v3");
-  }
-
+  console.log("✅ MYSTRONIUM PRODUCTION: All Firebase environment variables present");
   return true;
 };
 
@@ -84,8 +95,9 @@ const validateEnvVars = () => {
 const getFirebaseConfig = () => {
   const hasValidConfig = validateEnvVars();
 
-  if (!hasValidConfig) {
-    // Demo config for development without Firebase
+  // Only use demo config in development mode
+  if (!hasValidConfig && import.meta.env.DEV) {
+    console.warn("🛠️ MYSTRONIUM DIAGNOSTIC: Using demo Firebase config for development");
     return {
       apiKey: "demo-api-key",
       authDomain: "demo.firebaseapp.com",
@@ -96,6 +108,11 @@ const getFirebaseConfig = () => {
       measurementId: "G-DEMO123",
       databaseURL: "https://mystronium-default-rtdb.firebaseio.com",
     };
+  }
+
+  // In production, always use real environment variables
+  if (!hasValidConfig && !import.meta.env.DEV) {
+    throw new Error("Firebase configuration validation failed in production");
   }
 
   return {

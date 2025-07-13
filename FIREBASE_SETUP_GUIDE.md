@@ -109,3 +109,54 @@ const supabase = createClient(
 ---
 
 **You can now follow this guide for a Netlify-only deployment. If you want, I can walk you through the Supabase migration as well. Let me know how you'd like to proceed!** 
+
+Here’s exactly what you need to do to fix the Firebase environment variable error and test live on Netlify:
+
+---
+
+## 1. **Add the Missing Variable in Netlify**
+Go to your Netlify dashboard →  
+**Site settings → Build & deploy → Environment → Environment variables**  
+Add (or update) this variable:
+```
+VITE_RECAPTCHA_SITE_KEY=your_real_recaptcha_site_key
+```
+*(Copy the value from your Firebase Console > Project Settings > App Check, or from your existing `RECAPTCHA_SITE_KEY` if it’s correct.)*
+
+**Double-check** that all other Firebase variables are present and correct (no placeholders).
+
+---
+
+## 2. **Clear Netlify Build Cache and Redeploy**
+- Go to **Deploys → Trigger deploy → Clear cache and deploy site**  
+This ensures Netlify uses the new environment variables.
+
+---
+
+## 3. **Check Your Live Site**
+- Visit your Netlify site (e.g., `https://your-site.netlify.app`)
+- Open the browser console (F12) and look for Firebase errors.
+- Try to use Firebase features (login, database, etc.).
+
+---
+
+## 4. **If You See Errors**
+- Double-check for typos in variable names/values in Netlify.
+- Make sure you cleared the build cache before redeploying.
+- Check the browser console and Netlify deploy logs for error details.
+
+---
+
+**You do NOT need to test locally.**  
+Just update the Netlify environment variables, redeploy, and test live.
+
+If you want, you can also run:
+```sh
+<code_block_to_apply_changes_from>
+node scripts/fix-netlify-env.js
+```
+to get a summary of what’s missing in your `netlify.toml` (but the dashboard is the source of truth for live deploys).
+
+---
+
+**Let me know if you see any errors after redeploying, and I’ll help you debug them!** 
