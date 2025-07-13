@@ -35,10 +35,18 @@ const validateEnvVars = () => {
     recaptchaSiteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
   };
 
-  // Log all environment variables for debugging
+  // Enhanced debugging for production
   console.log("🔍 MYSTRONIUM DEBUG: Environment variables check:");
-  console.log("VITE_ENV:", import.meta.env);
-  console.log("Current env vars:", envVars);
+  console.log("Environment mode:", import.meta.env.MODE);
+  console.log("Is development:", import.meta.env.DEV);
+  console.log("Is production:", import.meta.env.PROD);
+  console.log("All VITE_ env vars:", Object.keys(import.meta.env).filter(key => key.startsWith('VITE_')));
+  
+  // Log each required variable individually
+  required.forEach(key => {
+    const value = import.meta.env[key];
+    console.log(`${key}:`, value ? `${value.substring(0, 10)}...` : 'UNDEFINED');
+  });
 
   const missing: string[] = [];
   const placeholderValues: string[] = [];
@@ -48,6 +56,7 @@ const validateEnvVars = () => {
     
     if (!value) {
       missing.push(key);
+      console.log(`❌ Missing: ${key}`);
     } else if (
       value === "your_firebase_api_key_here" ||
       value === "your-firebase-api-key" ||
@@ -61,6 +70,9 @@ const validateEnvVars = () => {
       value === "your-firebase-measurement-id"
     ) {
       placeholderValues.push(`${key}: ${value}`);
+      console.log(`⚠️ Placeholder: ${key} = ${value}`);
+    } else {
+      console.log(`✅ Valid: ${key} = ${value.substring(0, 10)}...`);
     }
   });
 
@@ -108,6 +120,7 @@ const validateEnvVars = () => {
       missing,
     );
     console.error("🔧 Please set these variables in your Netlify environment variables");
+    console.error("🔧 Current environment variables available:", Object.keys(import.meta.env).filter(key => key.startsWith('VITE_')));
     throw new Error(
       `Missing required Firebase environment variables: ${missing.join(", ")}`,
     );

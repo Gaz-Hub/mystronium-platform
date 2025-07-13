@@ -8,6 +8,7 @@ import LoginStreakInitializer from "./components/LoginStreakInitializer";
 import Navbar from "./components/Navbar";
 import CreditWarningBanner from "./components/CreditWarningBanner";
 import FirebaseDiagnostic from "./components/FirebaseDiagnostic";
+import FirebaseTest from "./components/FirebaseTest";
 import { testCurrentState } from "./utils/testCurrentState";
 import { quickTest } from "./utils/quickTest";
 import { checkEnvironmentVariables } from "./utils/environmentDiagnostic";
@@ -88,6 +89,7 @@ function App() {
                   <CreditWarningBanner />
                   {/* Firebase Diagnostic - Only show in development */}
                   {import.meta.env.DEV && <FirebaseDiagnostic />}
+                  {import.meta.env.DEV && <FirebaseTest />}
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
