@@ -148,7 +148,7 @@ VITE_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
 const endpointSecret = process.env.VITE_STRIPE_WEBHOOK_SECRET;
 const webhookEndpoint = 'https://mystronium.com/api/stripe/webhook';
 const apiVersion = '2025-05-28.basil';
-const signingSecret = 'whsec_RB3F4n6YcFhCn8RR4nP8iyt3945ubIFM';
+const signingSecret = 'whsec_your_webhook_secret';
 
 // Events handled: invoice.paid, subscription.created, etc.
 ```

@@ -8,7 +8,7 @@ echo Creating .env.local with real Firebase config...
 echo # 🔐 MYSTRONIUM™ PRODUCTION ENVIRONMENT
 echo.
 echo # 🔥 FIREBASE CONFIG ^(REAL VALUES^)
-echo VITE_FIREBASE_API_KEY=AIzaSyApc8w_aWw4wDQfNdDZDH399959sXXvKMU
+echo VITE_FIREBASE_API_KEY=your_firebase_api_key_here
 echo VITE_FIREBASE_AUTH_DOMAIN=mystronium.firebaseapp.com
 echo VITE_FIREBASE_PROJECT_ID=mystronium
 echo VITE_FIREBASE_STORAGE_BUCKET=mystronium.firebasestorage.app

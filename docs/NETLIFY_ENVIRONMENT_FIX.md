@@ -34,7 +34,7 @@ VITE_FIREBASE_DATABASE_URL=https://your_project.firebaseio.com
 # Stripe Configuration
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_XXXXXXXXXXXXXXXXXXXX
 VITE_STRIPE_SECRET_KEY=sk_test_XXXXXXXXXXXXXXXXXXXX
-VITE_STRIPE_WEBHOOK_SECRET=whsec_RB3F4n6YcFhCn8RR4nP8iyt3945ubIFM
+VITE_STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
 
 # Admin Configuration
 VITE_ADMIN_SECRET=spiralcoremaster
