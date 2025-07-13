@@ -8,8 +8,29 @@
     <meta name="description" content="MYSTRONIUM™ - AI-powered creative platform for book writing, art generation, and voice synthesis. Go from nothing to book to cartoon." />
     <meta name="keywords" content="AI writing, book creation, art generation, voice synthesis, creative platform" />
     
+    <!-- Content Security Policy for required services -->
+    <meta http-equiv="Content-Security-Policy" content="
+      script-src 'self' 'unsafe-inline' 'unsafe-eval'
+        https://www.gstatic.com
+        https://www.google.com
+        https://www.gstatic.com/recaptcha/
+        https://www.google.com/recaptcha/
+        https://js.stripe.com;
+      connect-src 'self'
+        https://content-firebaseappcheck.googleapis.com
+        https://firebase.googleapis.com
+        https://firestore.googleapis.com
+        https://identitytoolkit.googleapis.com
+        https://securetoken.googleapis.com
+        https://www.googleapis.com
+        https://api.stripe.com
+        https://js.stripe.com
+        https://www.google.com
+        https://www.gstatic.com
+        https://recaptcha.google.com;
+    ">
     <!-- PWA Meta Tags -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="MYSTRONIUM" />
     
