@@ -5,6 +5,8 @@ import { getStorage } from 'firebase/storage';
 import { getDatabase } from 'firebase/database';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 
+console.log('VITE ENV:', import.meta.env);
+
 // Environment variable validation with comprehensive logging
 const validateEnvVars = () => {
   const required = [

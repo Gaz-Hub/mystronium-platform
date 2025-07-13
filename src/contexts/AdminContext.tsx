@@ -76,7 +76,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     // Module toggle functionality - updates system configuration
     setAdminData(prev => ({
       ...prev,
-      [module]: !prev[module]
+      [module]: !(prev as any)[module]
     }));
   };
 

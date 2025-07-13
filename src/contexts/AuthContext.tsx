@@ -13,8 +13,8 @@ interface AuthContextProps {
   currentUser: User | null;
   user: string | null; // Keep for backward compatibility
   setUser: (user: string | null) => void;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, displayName?: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<any>;
+  register: (email: string, password: string, displayName?: string) => Promise<any>;
   logout: () => Promise<void>;
   loading: boolean;
 }
