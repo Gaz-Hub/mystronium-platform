@@ -1,14 +1,10 @@
 # MYSTRONIUM™ Platform Security Headers
 
-# Content Security Policy for Firebase + Stripe + reCAPTCHA + Google Fonts
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.gstatic.com https://www.googleapis.com https://www.google.com https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/ https://www.recaptcha.net https://www.google-analytics.com https://js.stripe.com https://www.googletagmanager.com; connect-src 'self' https://firestore.googleapis.com https://firebase.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.recaptcha.net https://api.stripe.com https://js.stripe.com https://us-central1-*.cloudfunctions.net https://europe-west1-*.cloudfunctions.net https://*.firebaseio.com https://*.firebase.com https://*.googleapis.com https://*.gstatic.com https://*.google.com https://*.recaptcha.net https://*.stripe.com https://*.netlify.app https://*.netlify.com https://recaptcha.google.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src 'self' https://www.google.com https://www.recaptcha.net https://js.stripe.com; img-src 'self' data: https://firebasestorage.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self'
-
-# Security Headers
-/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://js.stripe.com; connect-src 'self' https://api.stripe.com; frame-src https://js.stripe.com; object-src 'none';
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
+  Referrer-Policy: no-referrer-when-downgrade
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 
 # Netlify Specific
