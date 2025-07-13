@@ -35,15 +35,33 @@ const validateEnvVars = () => {
     recaptchaSiteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
   };
 
-  const missing = required.filter((key) => {
+  // Log all environment variables for debugging
+  console.log("🔍 MYSTRONIUM DEBUG: Environment variables check:");
+  console.log("VITE_ENV:", import.meta.env);
+  console.log("Current env vars:", envVars);
+
+  const missing: string[] = [];
+  const placeholderValues: string[] = [];
+
+  required.forEach((key) => {
     const value = envVars[key as keyof typeof envVars];
-    return (
-      !value ||
+    
+    if (!value) {
+      missing.push(key);
+    } else if (
       value === "your_firebase_api_key_here" ||
-      value.includes("your_") ||
       value === "your-firebase-api-key" ||
-      value === "your-recaptcha-site-key"
-    );
+      value === "your-recaptcha-site-key" ||
+      value.includes("your-") ||
+      value === "your-firebase-auth-domain" ||
+      value === "your-firebase-project-id" ||
+      value === "your-firebase-storage-bucket" ||
+      value === "your-firebase-messaging-sender-id" ||
+      value === "your-firebase-app-id" ||
+      value === "your-firebase-measurement-id"
+    ) {
+      placeholderValues.push(`${key}: ${value}`);
+    }
   });
 
   // In development, be more lenient and show warnings
@@ -60,19 +78,27 @@ const validateEnvVars = () => {
         "📝 Update .env.local with your Firebase configuration values",
       );
       console.warn("🛠️ Running in demo mode with mock services for testing");
-      console.warn("📋 Current environment variables:", envVars);
       return false;
-    } else {
-      console.log(
-        "✅ MYSTRONIUM DIAGNOSTIC: All Firebase environment variables present",
-      );
-      console.log("🔧 Firebase configuration loaded successfully");
-      console.log("🌐 Project ID:", envVars.projectId);
-      console.log("🔐 Auth Domain:", envVars.authDomain);
-      console.log("🗄️ Realtime Database:", envVars.databaseURL);
-      console.log("🔒 App Check enabled with reCAPTCHA v3");
-      return true;
     }
+    
+    if (placeholderValues.length > 0) {
+      console.warn(
+        "⚠️ MYSTRONIUM DIAGNOSTIC: Found placeholder values:",
+        placeholderValues,
+      );
+      console.warn("🛠️ Running in demo mode with mock services for testing");
+      return false;
+    }
+
+    console.log(
+      "✅ MYSTRONIUM DIAGNOSTIC: All Firebase environment variables present",
+    );
+    console.log("🔧 Firebase configuration loaded successfully");
+    console.log("🌐 Project ID:", envVars.projectId);
+    console.log("🔐 Auth Domain:", envVars.authDomain);
+    console.log("🗄️ Realtime Database:", envVars.databaseURL);
+    console.log("🔒 App Check enabled with reCAPTCHA v3");
+    return true;
   }
 
   // In production, be strict and throw errors for missing variables
@@ -84,6 +110,17 @@ const validateEnvVars = () => {
     console.error("🔧 Please set these variables in your Netlify environment variables");
     throw new Error(
       `Missing required Firebase environment variables: ${missing.join(", ")}`,
+    );
+  }
+
+  if (placeholderValues.length > 0) {
+    console.error(
+      "❌ MYSTRONIUM PRODUCTION ERROR: Found placeholder values in environment variables:",
+      placeholderValues,
+    );
+    console.error("🔧 Please replace placeholder values with real Firebase credentials in Netlify");
+    throw new Error(
+      `Placeholder values found in environment variables: ${placeholderValues.join(", ")}`,
     );
   }
 
