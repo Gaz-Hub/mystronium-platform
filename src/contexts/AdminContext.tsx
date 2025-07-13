@@ -1,9 +1,9 @@
-import React, {
+import {
   createContext,
   useContext,
   useState,
-  ReactNode,
   useEffect,
+  ReactNode,
 } from "react";
 import { useAuth } from "./AuthContext";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -29,6 +29,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);
   const [godModeEnabled, setGodModeEnabled] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminLevel, setAdminLevel] = useState("user");
 
   // Check admin status from Firestore
   useEffect(() => {
@@ -40,38 +41,18 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 
       setLoading(true);
       try {
-        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          const adminStatus =
-            userData.admin === true ||
-            currentUser.email === "garetharjohns@gmail.com";
-          setIsAdmin(adminStatus);
-
-          // Set admin status for garetharjohns@gmail.com if not already set
-          if (
-            currentUser.email === "garetharjohns@gmail.com" &&
-            !userData.admin
-          ) {
-            await setDoc(
-              doc(db, "users", currentUser.uid),
-              { admin: true },
-              { merge: true },
-            );
-          }
-        } else if (currentUser.email === "garetharjohns@gmail.com") {
-          // Create admin user for garetharjohns@gmail.com
-          await setDoc(doc(db, "users", currentUser.uid), {
-            admin: true,
-            email: currentUser.email,
-            createdAt: new Date(),
-          });
-          setIsAdmin(true);
+        const adminDoc = await getDoc(doc(db, "admins", currentUser.uid));
+        if (adminDoc.exists()) {
+          const adminData = adminDoc.data();
+          setIsAdmin(adminData.isAdmin || false);
+          setAdminLevel(adminData.level || "user");
+        } else {
+          setIsAdmin(false);
+          setAdminLevel("user");
         }
-      } catch (error) {
-        // Silent error handling for production
+      } catch {
         setIsAdmin(false);
+        setAdminLevel("user");
       }
       setLoading(false);
     };

@@ -1,9 +1,8 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useUser } from "../contexts/UserContext";
 import { useAdmin } from "../contexts/AdminContext";
-import { LogOut, User, Crown, Zap, Shield, Settings } from "lucide-react";
+import { LogOut, User, Crown, Zap, Shield } from "lucide-react";
 
 const Navbar = () => {
   const { currentUser, logout } = useAuth();

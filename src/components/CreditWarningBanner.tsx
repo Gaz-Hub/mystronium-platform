@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { AlertTriangle, Zap, Crown } from "lucide-react";
 import { useCreditProtectionContext } from "./CreditProtectionProvider";

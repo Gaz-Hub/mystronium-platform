@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   useContext,
   useState,
@@ -74,8 +74,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     currentUser,
     user,
     setUser,
-    login,
-    register,
+    login: login,
+    register: register,
     logout,
     loading,
   };

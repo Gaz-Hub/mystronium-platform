@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import { useCreditProtection } from "../hooks/useCreditProtection";
 
 interface CreditProtectionContextProps {
@@ -10,6 +10,8 @@ interface CreditProtectionContextProps {
   emergencyMode: boolean;
   resetEmergencyMode: () => void;
   forceDisableHighCostFeatures: () => void;
+  usageStats: any;
+  config: any;
 }
 
 const CreditProtectionContext = createContext<
@@ -34,7 +36,7 @@ export const useCreditProtectionContext = () => {
   const context = useContext(CreditProtectionContext);
   if (!context) {
     throw new Error(
-      "useCreditProtectionContext must be used within CreditProtectionProvider",
+      "useCreditProtectionContext must be used within a CreditProtectionProvider",
     );
   }
   return context;

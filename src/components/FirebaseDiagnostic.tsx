@@ -62,7 +62,7 @@ const FirebaseDiagnostic: React.FC = () => {
       };
 
       const missingVars = Object.entries(envVars)
-        .filter(([key, value]) => !value || value.includes("your_"))
+        .filter(([, value]) => !value || value.includes("your_"))
         .map(([key]) => key);
 
       if (missingVars.length > 0) {
