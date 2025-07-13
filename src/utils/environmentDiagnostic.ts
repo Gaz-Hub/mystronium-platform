@@ -66,7 +66,7 @@ export const checkEnvironmentVariables = () => {
   console.log("\n🤖 RECAPTCHA VARIABLES:");
   console.log(
     "RECAPTCHA_SITE_KEY:",
-    import.meta.env.RECAPTCHA_SITE_KEY ? "✅ SET" : "❌ MISSING",
+    import.meta.env.VITE_RECAPTCHA_SITE_KEY ? "✅ SET" : "❌ MISSING",
   );
 
   // Check Data Connect Variables (if using)
