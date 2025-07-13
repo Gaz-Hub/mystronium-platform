@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useUser } from '../contexts/UserContext';
-import { BookOpen, Image, Type, Layout, Download, Wand2 } from 'lucide-react';
-import toast from 'react-hot-toast';
-import ProtectedRoute from '../components/ProtectedRoute';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useUser } from "../contexts/UserContext";
+import { BookOpen, Image, Type, Layout, Download, Wand2 } from "lucide-react";
+import toast from "react-hot-toast";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 interface ComicPanel {
   id: string;
@@ -17,36 +17,38 @@ const ComicCreator = () => {
   const { userProfile } = useUser();
   const [panels, setPanels] = useState<ComicPanel[]>([]);
   const [selectedPanel, setSelectedPanel] = useState<ComicPanel | null>(null);
-  const [comicTitle, setComicTitle] = useState('Untitled Comic');
+  const [comicTitle, setComicTitle] = useState("Untitled Comic");
   const [loading, setLoading] = useState(false);
 
   const addPanel = () => {
     const newPanel: ComicPanel = {
       id: Date.now().toString(),
-      text: '',
-      imagePrompt: '',
+      text: "",
+      imagePrompt: "",
       position: {
         x: Math.random() * 400,
         y: Math.random() * 300,
         width: 200,
-        height: 150
-      }
+        height: 150,
+      },
     };
     setPanels([...panels, newPanel]);
     setSelectedPanel(newPanel);
   };
 
   const updatePanel = (id: string, updates: Partial<ComicPanel>) => {
-    setPanels(panels.map(panel => 
-      panel.id === id ? { ...panel, ...updates } : panel
-    ));
+    setPanels(
+      panels.map((panel) =>
+        panel.id === id ? { ...panel, ...updates } : panel,
+      ),
+    );
     if (selectedPanel?.id === id) {
       setSelectedPanel({ ...selectedPanel, ...updates });
     }
   };
 
   const deletePanel = (id: string) => {
-    setPanels(panels.filter(panel => panel.id !== id));
+    setPanels(panels.filter((panel) => panel.id !== id));
     if (selectedPanel?.id === id) {
       setSelectedPanel(null);
     }
@@ -54,12 +56,12 @@ const ComicCreator = () => {
 
   const generatePanelImage = async (panel: ComicPanel) => {
     if (!panel.imagePrompt.trim()) {
-      toast.error('Please enter an image prompt');
+      toast.error("Please enter an image prompt");
       return;
     }
 
-    if (userProfile?.subscription === 'free') {
-      toast.error('Comic Creator requires Premium or Creator Pro subscription');
+    if (userProfile?.subscription === "free") {
+      toast.error("Comic Creator requires Premium or Creator Pro subscription");
       return;
     }
 
@@ -69,19 +71,19 @@ const ComicCreator = () => {
       setTimeout(() => {
         const mockImageUrl = `https://picsum.photos/400/300?random=${Date.now()}`;
         updatePanel(panel.id, { imageUrl: mockImageUrl });
-        toast.success('Panel image generated!');
+        toast.success("Panel image generated!");
         setLoading(false);
       }, 2000);
     } catch (error) {
-      console.error('Error generating image:', error);
-      toast.error('Failed to generate image');
+      console.error("Error generating image:", error);
+      toast.error("Failed to generate image");
       setLoading(false);
     }
   };
 
   const exportComic = () => {
     if (panels.length === 0) {
-      toast.error('Add some panels first');
+      toast.error("Add some panels first");
       return;
     }
 
@@ -101,27 +103,31 @@ const ComicCreator = () => {
         </head>
         <body>
           <h1 class="comic-title">${comicTitle}</h1>
-          ${panels.map(panel => `
+          ${panels
+            .map(
+              (panel) => `
             <div class="panel">
               ${panel.imageUrl ? `<img src="${panel.imageUrl}" alt="Panel image" />` : '<div style="background: #333; height: 200px; display: flex; align-items: center; justify-content: center;">No image generated</div>'}
-              ${panel.text ? `<div class="panel-text">${panel.text}</div>` : ''}
+              ${panel.text ? `<div class="panel-text">${panel.text}</div>` : ""}
             </div>
-          `).join('')}
+          `,
+            )
+            .join("")}
         </body>
       </html>
     `;
 
-    const blob = new Blob([comicHTML], { type: 'text/html' });
+    const blob = new Blob([comicHTML], { type: "text/html" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `${comicTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
+    a.download = `${comicTitle.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    toast.success('Comic exported successfully!');
+    toast.success("Comic exported successfully!");
   };
 
   return (
@@ -137,11 +143,15 @@ const ComicCreator = () => {
               <BookOpen className="mr-3 w-10 h-10 text-pink-400" />
               Comic Creator
             </h1>
-            <p className="text-gray-400">Create visual stories with AI-generated panels</p>
-            {userProfile?.subscription === 'free' && (
+            <p className="text-gray-400">
+              Create visual stories with AI-generated panels
+            </p>
+            {userProfile?.subscription === "free" && (
               <div className="mt-4 bg-pink-900/20 border border-pink-500 text-pink-400 p-3 rounded-lg inline-block">
                 <p className="font-medium">Premium Feature</p>
-                <p className="text-sm">Upgrade to Premium or Creator Pro to use Comic Creator</p>
+                <p className="text-sm">
+                  Upgrade to Premium or Creator Pro to use Comic Creator
+                </p>
               </div>
             )}
           </div>
@@ -168,7 +178,7 @@ const ComicCreator = () => {
                   <div className="flex space-x-2">
                     <button
                       onClick={addPanel}
-                      disabled={userProfile?.subscription === 'free'}
+                      disabled={userProfile?.subscription === "free"}
                       className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 disabled:opacity-50 transition-colors flex items-center"
                     >
                       <Image className="w-4 h-4 mr-1" />
@@ -198,21 +208,23 @@ const ComicCreator = () => {
                       <motion.div
                         key={panel.id}
                         className={`absolute border-2 cursor-pointer ${
-                          selectedPanel?.id === panel.id ? 'border-pink-500' : 'border-gray-400'
+                          selectedPanel?.id === panel.id
+                            ? "border-pink-500"
+                            : "border-gray-400"
                         }`}
                         style={{
                           left: panel.position.x,
                           top: panel.position.y,
                           width: panel.position.width,
-                          height: panel.position.height
+                          height: panel.position.height,
                         }}
                         onClick={() => setSelectedPanel(panel)}
                         whileHover={{ scale: 1.02 }}
                       >
                         {panel.imageUrl ? (
-                          <img 
-                            src={panel.imageUrl} 
-                            alt="Panel" 
+                          <img
+                            src={panel.imageUrl}
+                            alt="Panel"
                             className="w-full h-full object-cover"
                           />
                         ) : (
@@ -243,20 +255,32 @@ const ComicCreator = () => {
                 {selectedPanel ? (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-white font-medium mb-2">Panel Text</label>
+                      <label className="block text-white font-medium mb-2">
+                        Panel Text
+                      </label>
                       <textarea
                         value={selectedPanel.text}
-                        onChange={(e) => updatePanel(selectedPanel.id, { text: e.target.value })}
+                        onChange={(e) =>
+                          updatePanel(selectedPanel.id, {
+                            text: e.target.value,
+                          })
+                        }
                         placeholder="Enter dialogue or narration..."
                         className="w-full h-20 bg-gray-800 text-white p-3 rounded-lg border border-gray-600 focus:border-pink-500 focus:outline-none resize-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-white font-medium mb-2">Image Prompt</label>
+                      <label className="block text-white font-medium mb-2">
+                        Image Prompt
+                      </label>
                       <textarea
                         value={selectedPanel.imagePrompt}
-                        onChange={(e) => updatePanel(selectedPanel.id, { imagePrompt: e.target.value })}
+                        onChange={(e) =>
+                          updatePanel(selectedPanel.id, {
+                            imagePrompt: e.target.value,
+                          })
+                        }
                         placeholder="Describe the scene for this panel..."
                         className="w-full h-20 bg-gray-800 text-white p-3 rounded-lg border border-gray-600 focus:border-pink-500 focus:outline-none resize-none"
                       />
@@ -264,7 +288,11 @@ const ComicCreator = () => {
 
                     <button
                       onClick={() => generatePanelImage(selectedPanel)}
-                      disabled={loading || !selectedPanel.imagePrompt.trim() || userProfile?.subscription === 'free'}
+                      disabled={
+                        loading ||
+                        !selectedPanel.imagePrompt.trim() ||
+                        userProfile?.subscription === "free"
+                      }
                       className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:from-pink-700 hover:to-purple-700 disabled:opacity-50 transition-all flex items-center justify-center"
                     >
                       {loading ? (
@@ -290,7 +318,9 @@ const ComicCreator = () => {
                 ) : (
                   <div className="text-center py-8">
                     <Type className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                    <p className="text-gray-500 italic">Select a panel to edit</p>
+                    <p className="text-gray-500 italic">
+                      Select a panel to edit
+                    </p>
                   </div>
                 )}
               </div>
@@ -304,11 +334,15 @@ const ComicCreator = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">With Images:</span>
-                    <span className="text-white">{panels.filter(p => p.imageUrl).length}</span>
+                    <span className="text-white">
+                      {panels.filter((p) => p.imageUrl).length}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">With Text:</span>
-                    <span className="text-white">{panels.filter(p => p.text).length}</span>
+                    <span className="text-white">
+                      {panels.filter((p) => p.text).length}
+                    </span>
                   </div>
                 </div>
               </div>

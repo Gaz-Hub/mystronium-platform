@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
-import { db } from '../firebase';
-import { useAuth } from '../contexts/AuthContext';
-import { BookOpen, Star, ShoppingCart, Download, User, Calendar } from 'lucide-react';
-import { loadStripe } from '@stripe/stripe-js';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { doc, getDoc, updateDoc, increment } from "firebase/firestore";
+import { db } from "../firebase";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  BookOpen,
+  Star,
+  ShoppingCart,
+  Download,
+  User,
+  Calendar,
+} from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
+import toast from "react-hot-toast";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -53,29 +60,29 @@ const BookDetails = () => {
 
   const loadBook = async (bookId: string) => {
     try {
-      const bookDoc = await getDoc(doc(db, 'books', bookId));
+      const bookDoc = await getDoc(doc(db, "books", bookId));
       if (bookDoc.exists()) {
         const bookData = {
           ...bookDoc.data(),
           id: bookDoc.id,
-          createdAt: bookDoc.data().createdAt?.toDate() || new Date()
+          createdAt: bookDoc.data().createdAt?.toDate() || new Date(),
         } as Book;
         setBook(bookData);
       } else {
-        toast.error('Book not found');
-        navigate('/bookstore');
+        toast.error("Book not found");
+        navigate("/bookstore");
       }
     } catch (error) {
-      console.error('Error loading book:', error);
-      toast.error('Failed to load book');
+      console.error("Error loading book:", error);
+      toast.error("Failed to load book");
     }
     setLoading(false);
   };
 
   const handlePurchase = async () => {
     if (!currentUser) {
-      toast.error('Please log in to purchase');
-      navigate('/login');
+      toast.error("Please log in to purchase");
+      navigate("/login");
       return;
     }
 
@@ -85,33 +92,32 @@ const BookDetails = () => {
     try {
       // In a real app, you'd call your backend to create a Stripe checkout session
       // For demo purposes, we'll simulate the purchase
-      toast.success('Redirecting to checkout...');
-      
+      toast.success("Redirecting to checkout...");
+
       // Simulate Stripe checkout
       setTimeout(async () => {
         try {
           // Update book sales
-          await updateDoc(doc(db, 'books', book.id), {
-            sales: increment(1)
+          await updateDoc(doc(db, "books", book.id), {
+            sales: increment(1),
           });
 
           // In a real app, you'd also:
           // 1. Create a purchase record
           // 2. Give user access to the book
           // 3. Update creator earnings
-          
-          toast.success('Purchase successful! Book added to your library.');
+
+          toast.success("Purchase successful! Book added to your library.");
           setBook({ ...book, sales: book.sales + 1 });
         } catch (error) {
-          console.error('Error completing purchase:', error);
-          toast.error('Purchase failed. Please try again.');
+          console.error("Error completing purchase:", error);
+          toast.error("Purchase failed. Please try again.");
         }
         setPurchasing(false);
       }, 2000);
-      
     } catch (error) {
-      console.error('Purchase error:', error);
-      toast.error('Purchase failed. Please try again.');
+      console.error("Purchase error:", error);
+      toast.error("Purchase failed. Please try again.");
       setPurchasing(false);
     }
   };
@@ -130,7 +136,9 @@ const BookDetails = () => {
         <div className="text-center">
           <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">Book Not Found</h2>
-          <p className="text-gray-400">The book you're looking for doesn't exist.</p>
+          <p className="text-gray-400">
+            The book you're looking for doesn't exist.
+          </p>
         </div>
       </div>
     );
@@ -149,8 +157,8 @@ const BookDetails = () => {
             <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-600 sticky top-24">
               <div className="mb-6">
                 {book.coverUrl ? (
-                  <img 
-                    src={book.coverUrl} 
+                  <img
+                    src={book.coverUrl}
                     alt={book.title}
                     className="w-full rounded-lg shadow-lg"
                   />
@@ -162,7 +170,9 @@ const BookDetails = () => {
               </div>
 
               <div className="text-center mb-6">
-                <div className="text-3xl font-bold text-white mb-2">£{book.price.toFixed(2)}</div>
+                <div className="text-3xl font-bold text-white mb-2">
+                  £{book.price.toFixed(2)}
+                </div>
                 <div className="flex items-center justify-center space-x-4 text-sm text-gray-400">
                   <div className="flex items-center">
                     <Star className="w-4 h-4 text-yellow-400 fill-current mr-1" />
@@ -201,7 +211,9 @@ const BookDetails = () => {
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-600">
               <div className="mb-4">
-                <h1 className="text-3xl font-bold text-white mb-2">{book.title}</h1>
+                <h1 className="text-3xl font-bold text-white mb-2">
+                  {book.title}
+                </h1>
                 <div className="flex items-center space-x-4 text-gray-400">
                   <div className="flex items-center">
                     <User className="w-4 h-4 mr-1" />
@@ -218,7 +230,9 @@ const BookDetails = () => {
               </div>
 
               <div className="prose prose-invert max-w-none">
-                <p className="text-gray-300 leading-relaxed">{book.description}</p>
+                <p className="text-gray-300 leading-relaxed">
+                  {book.description}
+                </p>
               </div>
             </div>
 
@@ -233,7 +247,9 @@ const BookDetails = () => {
                     </p>
                   </div>
                   <div className="mt-4 text-center">
-                    <p className="text-gray-500 italic">...continue reading after purchase</p>
+                    <p className="text-gray-500 italic">
+                      ...continue reading after purchase
+                    </p>
                   </div>
                 </div>
               </div>
@@ -242,20 +258,27 @@ const BookDetails = () => {
             {/* Reviews */}
             <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-600">
               <h2 className="text-xl font-bold text-white mb-4">Reviews</h2>
-              
+
               {book.reviews && book.reviews.length > 0 ? (
                 <div className="space-y-4">
                   {book.reviews.map((review) => (
-                    <div key={review.id} className="bg-gray-700/50 p-4 rounded-lg">
+                    <div
+                      key={review.id}
+                      className="bg-gray-700/50 p-4 rounded-lg"
+                    >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center space-x-2">
-                          <span className="text-white font-medium">{review.userName}</span>
+                          <span className="text-white font-medium">
+                            {review.userName}
+                          </span>
                           <div className="flex items-center">
                             {[...Array(5)].map((_, i) => (
                               <Star
                                 key={i}
                                 className={`w-4 h-4 ${
-                                  i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-600'
+                                  i < review.rating
+                                    ? "text-yellow-400 fill-current"
+                                    : "text-gray-600"
                                 }`}
                               />
                             ))}
@@ -273,14 +296,18 @@ const BookDetails = () => {
                 <div className="text-center py-8">
                   <Star className="w-12 h-12 text-gray-600 mx-auto mb-3" />
                   <p className="text-gray-500 italic">No reviews yet</p>
-                  <p className="text-gray-600 text-sm">Be the first to review this book!</p>
+                  <p className="text-gray-600 text-sm">
+                    Be the first to review this book!
+                  </p>
                 </div>
               )}
             </div>
 
             {/* Author Info */}
             <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-600">
-              <h2 className="text-xl font-bold text-white mb-4">About the Author</h2>
+              <h2 className="text-xl font-bold text-white mb-4">
+                About the Author
+              </h2>
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
                   <User className="w-6 h-6 text-white" />

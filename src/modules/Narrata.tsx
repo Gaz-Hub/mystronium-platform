@@ -1,98 +1,114 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useUser } from '../contexts/UserContext';
-import { useAdmin } from '../contexts/AdminContext';
-import { Volume2, Play, Pause, Download, Share2, Settings, Mic, Activity } from 'lucide-react';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useUser } from "../contexts/UserContext";
+import { useAdmin } from "../contexts/AdminContext";
+import {
+  Volume2,
+  Play,
+  Pause,
+  Download,
+  Share2,
+  Settings,
+  Mic,
+  Activity,
+} from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Narrata = () => {
   const { userProfile } = useUser();
   const { godModeEnabled } = useAdmin();
-  const [text, setText] = useState('');
-  const [audioUrl, setAudioUrl] = useState('');
+  const [text, setText] = useState("");
+  const [audioUrl, setAudioUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedVoice, setSelectedVoice] = useState('alloy');
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  const [selectedVoice, setSelectedVoice] = useState("alloy");
+  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
+    null,
+  );
 
   const voices = [
-    { id: 'alloy', name: 'Alloy', description: 'Balanced and clear' },
-    { id: 'echo', name: 'Echo', description: 'Deep and resonant' },
-    { id: 'fable', name: 'Fable', description: 'Warm and storytelling' },
-    { id: 'onyx', name: 'Onyx', description: 'Rich and powerful' },
-    { id: 'nova', name: 'Nova', description: 'Bright and energetic' },
-    { id: 'shimmer', name: 'Shimmer', description: 'Soft and melodic' }
+    { id: "alloy", name: "Alloy", description: "Balanced and clear" },
+    { id: "echo", name: "Echo", description: "Deep and resonant" },
+    { id: "fable", name: "Fable", description: "Warm and storytelling" },
+    { id: "onyx", name: "Onyx", description: "Rich and powerful" },
+    { id: "nova", name: "Nova", description: "Bright and energetic" },
+    { id: "shimmer", name: "Shimmer", description: "Soft and melodic" },
   ];
 
   const generateVoice = async () => {
     if (!text.trim()) {
-      toast.error('Please enter text to convert to speech');
+      toast.error("Please enter text to convert to speech");
       return;
     }
-    
+
     // Check credits unless God Mode is enabled
-    if (!godModeEnabled && (!userProfile || userProfile.subscription === 'free')) {
-      toast.error('Insufficient credits. Upgrade to Pro for unlimited voice generation.');
+    if (
+      !godModeEnabled &&
+      (!userProfile || userProfile.subscription === "free")
+    ) {
+      toast.error(
+        "Insufficient credits. Upgrade to Pro for unlimited voice generation.",
+      );
       return;
     }
-    
+
     setLoading(true);
-    
+
     try {
       // Generate voice using ElevenLabs API
       const response = await axios.post(
         `https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice}`,
         {
           text: text,
-          model_id: 'eleven_monolingual_v1',
+          model_id: "eleven_monolingual_v1",
           voice_settings: {
             stability: 0.5,
-            similarity_boost: 0.5
-          }
+            similarity_boost: 0.5,
+          },
         },
         {
           headers: {
-            'Accept': 'audio/mpeg',
-            'Content-Type': 'application/json',
-            'xi-api-key': import.meta.env.VITE_ELEVENLABS_API_KEY
+            Accept: "audio/mpeg",
+            "Content-Type": "application/json",
+            "xi-api-key": import.meta.env.VITE_ELEVENLABS_API_KEY,
           },
-          responseType: 'blob'
-        }
+          responseType: "blob",
+        },
       );
 
       // Create audio URL from blob
-      const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
+      const audioBlob = new Blob([response.data], { type: "audio/mpeg" });
       const url = URL.createObjectURL(audioBlob);
       setAudioUrl(url);
-      
+
       // Create audio element for playback
       const audio = new Audio(url);
       setAudioElement(audio);
-      
+
       setLoading(false);
-      toast.success('Voice generated successfully!', {
-        icon: '🎤',
+      toast.success("Voice generated successfully!", {
+        icon: "🎤",
         style: {
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          color: "white",
         },
       });
-
     } catch (error) {
       // Fallback to demo audio on API error
-      const demoUrl = 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav';
+      const demoUrl =
+        "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav";
       setAudioUrl(demoUrl);
-      
+
       const audio = new Audio(demoUrl);
       setAudioElement(audio);
-      
+
       setLoading(false);
-      toast.success('Voice generated! (Demo mode)', {
-        icon: '🎤',
+      toast.success("Voice generated! (Demo mode)", {
+        icon: "🎤",
         style: {
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          color: "white",
         },
       });
     }
@@ -100,7 +116,7 @@ const Narrata = () => {
 
   const togglePlayback = () => {
     if (!audioElement) return;
-    
+
     if (isPlaying) {
       audioElement.pause();
       setIsPlaying(false);
@@ -112,29 +128,29 @@ const Narrata = () => {
 
   const downloadAudio = () => {
     if (!audioUrl) return;
-    
-    const link = document.createElement('a');
+
+    const link = document.createElement("a");
     link.href = audioUrl;
     link.download = `narrata-voice-${Date.now()}.mp3`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
-    toast.success('Audio downloaded!');
+
+    toast.success("Audio downloaded!");
   };
 
   const shareAudio = () => {
     if (!audioUrl) return;
-    
+
     if (navigator.share) {
       navigator.share({
-        title: 'Narrata Voice Generation',
-        text: 'Check out this AI-generated voice!',
-        url: audioUrl
+        title: "Narrata Voice Generation",
+        text: "Check out this AI-generated voice!",
+        url: audioUrl,
       });
     } else {
       navigator.clipboard.writeText(audioUrl);
-      toast.success('Audio URL copied to clipboard!');
+      toast.success("Audio URL copied to clipboard!");
     }
   };
 
@@ -152,20 +168,25 @@ const Narrata = () => {
             <Volume2 className="mr-3 w-10 h-10 text-blue-400" />
             🎤 Narrata™
           </h1>
-          <p className="text-gray-400 text-glyph mb-2">Transform text into natural speech with AI</p>
+          <p className="text-gray-400 text-glyph mb-2">
+            Transform text into natural speech with AI
+          </p>
           <div className="flex items-center justify-center space-x-4 text-sm">
             {godModeEnabled ? (
               <span className="text-yellow-400 font-bold flex items-center">
-                <Activity className="w-4 h-4 mr-1" />
-                ⚡ GOD MODE - Unlimited Access
+                <Activity className="w-4 h-4 mr-1" />⚡ GOD MODE - Unlimited
+                Access
               </span>
             ) : (
               <span className="text-blue-400">
-                Credits: {userProfile?.subscription === 'free' ? 'Limited' : '∞'}
+                Credits:{" "}
+                {userProfile?.subscription === "free" ? "Limited" : "∞"}
               </span>
             )}
             <span className="text-gray-400">|</span>
-            <span className="text-purple-400">Voices Generated: {audioUrl ? '1' : '0'}</span>
+            <span className="text-purple-400">
+              Voices Generated: {audioUrl ? "1" : "0"}
+            </span>
           </div>
         </motion.div>
 
@@ -192,12 +213,14 @@ const Narrata = () => {
                     onClick={() => setSelectedVoice(voice.id)}
                     className={`p-3 rounded-lg border transition-all text-left ${
                       selectedVoice === voice.id
-                        ? 'border-blue-500 bg-blue-600/20'
-                        : 'border-gray-600 bg-gray-700/50 hover:border-gray-500'
+                        ? "border-blue-500 bg-blue-600/20"
+                        : "border-gray-600 bg-gray-700/50 hover:border-gray-500"
                     }`}
                   >
                     <div className="font-medium text-white">{voice.name}</div>
-                    <div className="text-xs text-gray-400">{voice.description}</div>
+                    <div className="text-xs text-gray-400">
+                      {voice.description}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -205,7 +228,9 @@ const Narrata = () => {
 
             {/* Text Input */}
             <div className="mb-6">
-              <label className="block text-white font-medium mb-2">Text to Speech</label>
+              <label className="block text-white font-medium mb-2">
+                Text to Speech
+              </label>
               <textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -281,10 +306,12 @@ const Narrata = () => {
                       )}
                     </button>
                   </div>
-                  
+
                   <div className="text-center">
                     <p className="text-white font-medium">Generated Audio</p>
-                    <p className="text-gray-400 text-sm">Voice: {voices.find(v => v.id === selectedVoice)?.name}</p>
+                    <p className="text-gray-400 text-sm">
+                      Voice: {voices.find((v) => v.id === selectedVoice)?.name}
+                    </p>
                   </div>
                 </div>
 
@@ -297,7 +324,7 @@ const Narrata = () => {
                     <Download className="w-4 h-4" />
                     <span>Download</span>
                   </button>
-                  
+
                   <button
                     onClick={shareAudio}
                     className="flex items-center justify-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg transition-all"
@@ -316,18 +343,22 @@ const Narrata = () => {
                         className="w-1 bg-blue-400 rounded-full"
                         style={{
                           height: `${Math.random() * 40 + 10}px`,
-                          animationDelay: `${i * 0.1}s`
+                          animationDelay: `${i * 0.1}s`,
                         }}
                       />
                     ))}
                   </div>
-                  <p className="text-center text-gray-400 text-sm mt-2">Audio waveform visualization</p>
+                  <p className="text-center text-gray-400 text-sm mt-2">
+                    Audio waveform visualization
+                  </p>
                 </div>
               </div>
             ) : (
               <div className="text-center py-12">
                 <Volume2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-400">No audio generated yet. Create your first voice!</p>
+                <p className="text-gray-400">
+                  No audio generated yet. Create your first voice!
+                </p>
               </div>
             )}
           </motion.div>

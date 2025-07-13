@@ -1,58 +1,58 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { motion } from 'framer-motion';
-import { UserPlus, Mail, Lock, User, AlertCircle } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { motion } from "framer-motion";
+import { UserPlus, Mail, Lock, User, AlertCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
-      setError('Please fill in all fields');
+      setError("Please fill in all fields");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       return;
     }
 
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
       await register(email, password, displayName || undefined);
-      toast.success('Welcome to MYSTRONIUM! Your account has been created.');
-      navigate('/dashboard');
+      toast.success("Welcome to MYSTRONIUM! Your account has been created.");
+      navigate("/dashboard");
     } catch (error: any) {
-      console.error('Registration error:', error);
-      if (error.code === 'auth/email-already-in-use') {
-        setError('An account with this email already exists');
-      } else if (error.code === 'auth/invalid-email') {
-        setError('Invalid email address');
-      } else if (error.code === 'auth/weak-password') {
-        setError('Password is too weak');
+      console.error("Registration error:", error);
+      if (error.code === "auth/email-already-in-use") {
+        setError("An account with this email already exists");
+      } else if (error.code === "auth/invalid-email") {
+        setError("Invalid email address");
+      } else if (error.code === "auth/weak-password") {
+        setError("Password is too weak");
       } else {
-        setError('Registration failed. Please try again.');
+        setError("Registration failed. Please try again.");
       }
     }
-    
+
     setLoading(false);
   };
 
@@ -67,7 +67,9 @@ const Register = () => {
         <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl border border-gray-600">
           <div className="text-center mb-8">
             <div className="text-4xl mb-4">✨</div>
-            <h1 className="text-3xl font-bold text-white mb-2">Join MYSTRONIUM</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              Join MYSTRONIUM
+            </h1>
             <p className="text-gray-400">Create your creator account</p>
           </div>
 
@@ -80,7 +82,9 @@ const Register = () => {
 
           <form onSubmit={handleRegister} className="space-y-6">
             <div>
-              <label className="block text-white font-medium mb-2">Display Name (Optional)</label>
+              <label className="block text-white font-medium mb-2">
+                Display Name (Optional)
+              </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -109,7 +113,9 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="block text-white font-medium mb-2">Password</label>
+              <label className="block text-white font-medium mb-2">
+                Password
+              </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -125,7 +131,9 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="block text-white font-medium mb-2">Confirm Password</label>
+              <label className="block text-white font-medium mb-2">
+                Confirm Password
+              </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -161,7 +169,7 @@ const Register = () => {
 
           <div className="mt-6 text-center">
             <p className="text-gray-400">
-              Already have an account?{' '}
+              Already have an account?{" "}
               <Link to="/login" className="text-purple-400 hover:underline">
                 Sign in
               </Link>

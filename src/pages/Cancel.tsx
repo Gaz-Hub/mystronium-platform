@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { XCircle, ArrowLeft, RefreshCw } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { motion } from "framer-motion";
+import { XCircle, ArrowLeft, RefreshCw } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Cancel = () => {
   return (
@@ -21,19 +21,23 @@ const Cancel = () => {
           >
             <XCircle className="w-16 h-16 text-red-400 mx-auto" />
           </motion.div>
-          
-          <h1 className="text-3xl font-bold text-white mb-4">Payment Cancelled</h1>
+
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Payment Cancelled
+          </h1>
           <p className="text-gray-300 mb-6">
-            Your purchase was not completed. No charges have been made to your account.
-            You can try again anytime or continue using MYSTRONIUM with your current plan.
+            Your purchase was not completed. No charges have been made to your
+            account. You can try again anytime or continue using MYSTRONIUM with
+            your current plan.
           </p>
-          
+
           <div className="bg-blue-600/20 p-4 rounded-lg border border-blue-500/30 mb-6">
             <p className="text-blue-300 text-sm">
-              <strong>Need help?</strong> Contact our support team if you experienced any issues during checkout.
+              <strong>Need help?</strong> Contact our support team if you
+              experienced any issues during checkout.
             </p>
           </div>
-          
+
           <div className="space-y-3">
             <Link
               to="/store"
@@ -42,7 +46,7 @@ const Cancel = () => {
               <RefreshCw className="w-4 h-4 mr-2" />
               Try Again
             </Link>
-            
+
             <Link
               to="/"
               className="flex items-center justify-center text-gray-400 hover:text-white transition-colors"

@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { useUser } from '../contexts/UserContext';
-import { useAdmin } from '../contexts/AdminContext';
-import { 
-  BookOpen, 
-  Palette, 
-  Mic, 
-  FileText, 
-  TrendingUp, 
-  Zap, 
-  Crown, 
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useAuth } from "../contexts/AuthContext";
+import { useUser } from "../contexts/UserContext";
+import { useAdmin } from "../contexts/AdminContext";
+import {
+  BookOpen,
+  Palette,
+  Mic,
+  FileText,
+  TrendingUp,
+  Zap,
+  Crown,
   Star,
   Calendar,
   Target,
@@ -23,10 +23,10 @@ import {
   Sparkles,
   Shield,
   Sword,
-  Gem
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
+  Gem,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 interface UserStats {
   booksCreated: number;
@@ -49,48 +49,69 @@ const Dashboard = () => {
     narrationsCreated: 5,
     codexEntries: 8,
     loginStreak: 7,
-    totalCredits: godModeEnabled ? Infinity : (userProfile?.vaultCredits || 0),
+    totalCredits: godModeEnabled ? Infinity : userProfile?.vaultCredits || 0,
     usedCredits: 15,
-    achievements: ['First Book', 'Card Collector', 'Voice Master']
+    achievements: ["First Book", "Card Collector", "Voice Master"],
   });
 
   const [recentActivity, setRecentActivity] = useState([
-    { type: 'book', title: 'Digital Dreams', time: '2 hours ago', icon: '📚' },
-    { type: 'card', title: 'Mythic Dragon', time: '4 hours ago', icon: '🎨' },
-    { type: 'narration', title: 'Chapter 1 Audio', time: '6 hours ago', icon: '🎙️' },
-    { type: 'codex', title: 'Anunnaki Lore', time: '1 day ago', icon: '📜' }
+    { type: "book", title: "Digital Dreams", time: "2 hours ago", icon: "📚" },
+    { type: "card", title: "Mythic Dragon", time: "4 hours ago", icon: "🎨" },
+    {
+      type: "narration",
+      title: "Chapter 1 Audio",
+      time: "6 hours ago",
+      icon: "🎙️",
+    },
+    { type: "codex", title: "Anunnaki Lore", time: "1 day ago", icon: "📜" },
   ]);
 
   const [vaultCards, setVaultCards] = useState([
-    { id: 1, name: 'Mythic Dragon', rarity: 'mythic', power: 12, image: '🐉' },
-    { id: 2, name: 'Anunnaki Temple', rarity: 'ultra', power: 10, image: '🏛️' },
-    { id: 3, name: 'Digital Forest', rarity: 'rare', power: 8, image: '🌲' },
-    { id: 4, name: 'Conspiracy Symbol', rarity: 'common', power: 5, image: '🔮' }
+    { id: 1, name: "Mythic Dragon", rarity: "mythic", power: 12, image: "🐉" },
+    { id: 2, name: "Anunnaki Temple", rarity: "ultra", power: 10, image: "🏛️" },
+    { id: 3, name: "Digital Forest", rarity: "rare", power: 8, image: "🌲" },
+    {
+      id: 4,
+      name: "Conspiracy Symbol",
+      rarity: "common",
+      power: 5,
+      image: "🔮",
+    },
   ]);
 
   useEffect(() => {
     if (godModeEnabled) {
-      setStats(prev => ({ ...prev, totalCredits: Infinity }));
+      setStats((prev) => ({ ...prev, totalCredits: Infinity }));
     }
   }, [godModeEnabled]);
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
-      case 'mythic': return 'text-yellow-400';
-      case 'ultra': return 'text-purple-400';
-      case 'rare': return 'text-blue-400';
-      case 'common': return 'text-gray-400';
-      default: return 'text-gray-400';
+      case "mythic":
+        return "text-yellow-400";
+      case "ultra":
+        return "text-purple-400";
+      case "rare":
+        return "text-blue-400";
+      case "common":
+        return "text-gray-400";
+      default:
+        return "text-gray-400";
     }
   };
 
   const getRarityBg = (rarity: string) => {
     switch (rarity) {
-      case 'mythic': return 'bg-yellow-600/20 border-yellow-500/30';
-      case 'ultra': return 'bg-purple-600/20 border-purple-500/30';
-      case 'rare': return 'bg-blue-600/20 border-blue-500/30';
-      case 'common': return 'bg-gray-600/20 border-gray-500/30';
-      default: return 'bg-gray-600/20 border-gray-500/30';
+      case "mythic":
+        return "bg-yellow-600/20 border-yellow-500/30";
+      case "ultra":
+        return "bg-purple-600/20 border-purple-500/30";
+      case "rare":
+        return "bg-blue-600/20 border-blue-500/30";
+      case "common":
+        return "bg-gray-600/20 border-gray-500/30";
+      default:
+        return "bg-gray-600/20 border-gray-500/30";
     }
   };
 
@@ -112,7 +133,9 @@ const Dashboard = () => {
             Nothing → Book → Cartoon → Script
           </p>
           <p className="text-blue-400">
-            {currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Creator'}
+            {currentUser?.displayName ||
+              currentUser?.email?.split("@")[0] ||
+              "Creator"}
           </p>
         </motion.div>
 
@@ -125,7 +148,9 @@ const Dashboard = () => {
           >
             <div className="flex items-center justify-center space-x-2">
               <Crown className="w-6 h-6 text-yellow-400" />
-              <span className="text-yellow-400 font-bold text-lg">⚡ GOD MODE ACTIVE</span>
+              <span className="text-yellow-400 font-bold text-lg">
+                ⚡ GOD MODE ACTIVE
+              </span>
               <Sparkles className="w-5 h-5 text-yellow-400" />
             </div>
             <p className="text-center text-yellow-300 text-sm mt-1">
@@ -146,11 +171,16 @@ const Dashboard = () => {
               <BookOpen className="w-8 h-8 text-blue-400" />
               <div>
                 <p className="text-gray-400 text-sm">Books Created</p>
-                <p className="text-2xl font-bold text-blue-400">{stats.booksCreated}</p>
+                <p className="text-2xl font-bold text-blue-400">
+                  {stats.booksCreated}
+                </p>
               </div>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
-              <div className="bg-blue-400 h-2 rounded-full" style={{ width: `${(stats.booksCreated / 10) * 100}%` }} />
+              <div
+                className="bg-blue-400 h-2 rounded-full"
+                style={{ width: `${(stats.booksCreated / 10) * 100}%` }}
+              />
             </div>
           </motion.div>
 
@@ -164,11 +194,16 @@ const Dashboard = () => {
               <Palette className="w-8 h-8 text-purple-400" />
               <div>
                 <p className="text-gray-400 text-sm">Cards Generated</p>
-                <p className="text-2xl font-bold text-purple-400">{stats.cardsGenerated}</p>
+                <p className="text-2xl font-bold text-purple-400">
+                  {stats.cardsGenerated}
+                </p>
               </div>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
-              <div className="bg-purple-400 h-2 rounded-full" style={{ width: `${(stats.cardsGenerated / 20) * 100}%` }} />
+              <div
+                className="bg-purple-400 h-2 rounded-full"
+                style={{ width: `${(stats.cardsGenerated / 20) * 100}%` }}
+              />
             </div>
           </motion.div>
 
@@ -182,11 +217,16 @@ const Dashboard = () => {
               <Mic className="w-8 h-8 text-green-400" />
               <div>
                 <p className="text-gray-400 text-sm">Narrations</p>
-                <p className="text-2xl font-bold text-green-400">{stats.narrationsCreated}</p>
+                <p className="text-2xl font-bold text-green-400">
+                  {stats.narrationsCreated}
+                </p>
               </div>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
-              <div className="bg-green-400 h-2 rounded-full" style={{ width: `${(stats.narrationsCreated / 15) * 100}%` }} />
+              <div
+                className="bg-green-400 h-2 rounded-full"
+                style={{ width: `${(stats.narrationsCreated / 15) * 100}%` }}
+              />
             </div>
           </motion.div>
 
@@ -200,11 +240,16 @@ const Dashboard = () => {
               <FileText className="w-8 h-8 text-yellow-400" />
               <div>
                 <p className="text-gray-400 text-sm">Codex Entries</p>
-                <p className="text-2xl font-bold text-yellow-400">{stats.codexEntries}</p>
+                <p className="text-2xl font-bold text-yellow-400">
+                  {stats.codexEntries}
+                </p>
               </div>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
-              <div className="bg-yellow-400 h-2 rounded-full" style={{ width: `${(stats.codexEntries / 25) * 100}%` }} />
+              <div
+                className="bg-yellow-400 h-2 rounded-full"
+                style={{ width: `${(stats.codexEntries / 25) * 100}%` }}
+              />
             </div>
           </motion.div>
         </div>
@@ -224,7 +269,10 @@ const Dashboard = () => {
             </h2>
             <div className="space-y-3">
               {recentActivity.map((activity, index) => (
-                <div key={index} className="flex items-center space-x-3 p-3 bg-gray-700/50 rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-center space-x-3 p-3 bg-gray-700/50 rounded-lg"
+                >
                   <span className="text-2xl">{activity.icon}</span>
                   <div className="flex-1">
                     <p className="text-white font-medium">{activity.title}</p>
@@ -254,7 +302,9 @@ const Dashboard = () => {
                 >
                   <div className="text-center">
                     <div className="text-3xl mb-2">{card.image}</div>
-                    <p className={`text-sm font-medium ${getRarityColor(card.rarity)}`}>
+                    <p
+                      className={`text-sm font-medium ${getRarityColor(card.rarity)}`}
+                    >
                       {card.name}
                     </p>
                     <p className="text-xs text-gray-400">Power: {card.power}</p>
@@ -290,7 +340,7 @@ const Dashboard = () => {
                 <BookOpen className="w-5 h-5 text-blue-400" />
                 <span className="text-white">Start Writing</span>
               </Link>
-              
+
               <Link
                 to="/vault"
                 className="flex items-center space-x-3 p-3 bg-purple-600/20 border border-purple-500/30 rounded-lg hover:bg-purple-600/30 transition-colors"
@@ -298,7 +348,7 @@ const Dashboard = () => {
                 <Palette className="w-5 h-5 text-purple-400" />
                 <span className="text-white">Generate Art</span>
               </Link>
-              
+
               <Link
                 to="/narrata"
                 className="flex items-center space-x-3 p-3 bg-green-600/20 border border-green-500/30 rounded-lg hover:bg-green-600/30 transition-colors"
@@ -306,7 +356,7 @@ const Dashboard = () => {
                 <Mic className="w-5 h-5 text-green-400" />
                 <span className="text-white">Create Narration</span>
               </Link>
-              
+
               <Link
                 to="/codex"
                 className="flex items-center space-x-3 p-3 bg-yellow-600/20 border border-yellow-500/30 rounded-lg hover:bg-yellow-600/30 transition-colors"
@@ -339,26 +389,30 @@ const Dashboard = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="text-2xl">🔥</span>
-                  <span className="text-yellow-400 font-bold">{stats.loginStreak} days</span>
+                  <span className="text-yellow-400 font-bold">
+                    {stats.loginStreak} days
+                  </span>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Zap className="w-5 h-5 text-yellow-400" />
                   <span className="text-white">Vault Credits</span>
                 </div>
                 <span className="text-yellow-400 font-bold">
-                  {godModeEnabled ? '∞' : stats.totalCredits}
+                  {godModeEnabled ? "∞" : stats.totalCredits}
                 </span>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Award className="w-5 h-5 text-purple-400" />
                   <span className="text-white">Achievements</span>
                 </div>
-                <span className="text-purple-400 font-bold">{stats.achievements.length}</span>
+                <span className="text-purple-400 font-bold">
+                  {stats.achievements.length}
+                </span>
               </div>
             </div>
           </motion.div>
@@ -376,7 +430,10 @@ const Dashboard = () => {
             </h2>
             <div className="space-y-3">
               {stats.achievements.map((achievement, index) => (
-                <div key={index} className="flex items-center space-x-3 p-2 bg-yellow-600/10 border border-yellow-500/20 rounded">
+                <div
+                  key={index}
+                  className="flex items-center space-x-3 p-2 bg-yellow-600/10 border border-yellow-500/20 rounded"
+                >
                   <Star className="w-4 h-4 text-yellow-400" />
                   <span className="text-yellow-300 text-sm">{achievement}</span>
                 </div>

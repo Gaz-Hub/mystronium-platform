@@ -1,51 +1,58 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Upload, BookOpen, DollarSign, FileText } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useUser } from '../contexts/UserContext';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Upload, BookOpen, DollarSign, FileText } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { useUser } from "../contexts/UserContext";
+import toast from "react-hot-toast";
 
 const Sell = () => {
   const { currentUser } = useAuth();
   const { userProfile } = useUser();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [downloadLink, setDownloadLink] = useState('');
-  const [price, setPrice] = useState('');
-  const [genre, setGenre] = useState('fantasy');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [downloadLink, setDownloadLink] = useState("");
+  const [price, setPrice] = useState("");
+  const [genre, setGenre] = useState("fantasy");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!currentUser) {
-      toast.error('Please log in to sell books');
+      toast.error("Please log in to sell books");
       return;
     }
 
-    if (!title.trim() || !description.trim() || !downloadLink.trim() || !price.trim()) {
-      toast.error('Please fill in all required fields');
+    if (
+      !title.trim() ||
+      !description.trim() ||
+      !downloadLink.trim() ||
+      !price.trim()
+    ) {
+      toast.error("Please fill in all required fields");
       return;
     }
 
     setLoading(true);
-    
+
     try {
       // Simulate book submission (replace with actual API call)
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast.success('Book submitted for review! You\'ll be notified once it\'s approved.');
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      toast.success(
+        "Book submitted for review! You'll be notified once it's approved.",
+      );
+
       // Reset form
-      setTitle('');
-      setDescription('');
-      setDownloadLink('');
-      setPrice('');
-      setGenre('fantasy');
+      setTitle("");
+      setDescription("");
+      setDownloadLink("");
+      setPrice("");
+      setGenre("fantasy");
     } catch (error) {
-      toast.error('Failed to submit book. Please try again.');
+      toast.error("Failed to submit book. Please try again.");
     }
-    
+
     setLoading(false);
   };
 
@@ -55,7 +62,9 @@ const Sell = () => {
         <div className="text-center">
           <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">Login Required</h2>
-          <p className="text-gray-400">Please log in to sell your books on MYSTRONIUM.</p>
+          <p className="text-gray-400">
+            Please log in to sell your books on MYSTRONIUM.
+          </p>
         </div>
       </div>
     );
@@ -75,7 +84,8 @@ const Sell = () => {
               Sell Your Book
             </h1>
             <p className="text-gray-400">
-              Once you've created your book using Ghostscribe, you can list it for sale below
+              Once you've created your book using Ghostscribe, you can list it
+              for sale below
             </p>
           </div>
 
@@ -83,7 +93,9 @@ const Sell = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-white font-medium mb-2">Book Title *</label>
+                  <label className="block text-white font-medium mb-2">
+                    Book Title *
+                  </label>
                   <input
                     type="text"
                     value={title}
@@ -95,7 +107,9 @@ const Sell = () => {
                 </div>
 
                 <div>
-                  <label className="block text-white font-medium mb-2">Genre</label>
+                  <label className="block text-white font-medium mb-2">
+                    Genre
+                  </label>
                   <select
                     value={genre}
                     onChange={(e) => setGenre(e.target.value)}
@@ -113,7 +127,9 @@ const Sell = () => {
               </div>
 
               <div>
-                <label className="block text-white font-medium mb-2">Short Description *</label>
+                <label className="block text-white font-medium mb-2">
+                  Short Description *
+                </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -124,7 +140,9 @@ const Sell = () => {
               </div>
 
               <div>
-                <label className="block text-white font-medium mb-2">Download Link or Upload URL *</label>
+                <label className="block text-white font-medium mb-2">
+                  Download Link or Upload URL *
+                </label>
                 <input
                   type="url"
                   value={downloadLink}
@@ -134,12 +152,15 @@ const Sell = () => {
                   required
                 />
                 <p className="text-gray-400 text-sm mt-1">
-                  Upload your book to a file hosting service and provide the download link
+                  Upload your book to a file hosting service and provide the
+                  download link
                 </p>
               </div>
 
               <div>
-                <label className="block text-white font-medium mb-2">Price (£) *</label>
+                <label className="block text-white font-medium mb-2">
+                  Price (£) *
+                </label>
                 <div className="relative">
                   <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
@@ -154,7 +175,8 @@ const Sell = () => {
                   />
                 </div>
                 <p className="text-gray-400 text-sm mt-1">
-                  You'll receive 80% of the sale price (£{(parseFloat(price) * 0.8).toFixed(2)} per sale)
+                  You'll receive 80% of the sale price (£
+                  {(parseFloat(price) * 0.8).toFixed(2)} per sale)
                 </p>
               </div>
 
@@ -165,7 +187,9 @@ const Sell = () => {
                 </h3>
                 <ul className="text-blue-200 text-sm space-y-1">
                   <li>• Books must be original content created by you</li>
-                  <li>• Content will be reviewed for quality and appropriateness</li>
+                  <li>
+                    • Content will be reviewed for quality and appropriateness
+                  </li>
                   <li>• Approval typically takes 1-3 business days</li>
                   <li>• You retain full ownership of your content</li>
                   <li>• MYSTRONIUM takes a 20% platform fee</li>

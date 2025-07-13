@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-import { ChevronLeft, ChevronRight, BookOpen, ArrowLeft } from 'lucide-react';
-import ProtectedRoute from '../components/ProtectedRoute';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useAuth } from "../contexts/AuthContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { ChevronLeft, ChevronRight, BookOpen, ArrowLeft } from "lucide-react";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 interface BookContent {
   id: string;
@@ -39,38 +39,42 @@ const ReadBook = () => {
 
     try {
       // Check if user owns this book
-      const purchaseDoc = await getDoc(doc(db, 'purchases', `${currentUser.uid}_${bookId}`));
+      const purchaseDoc = await getDoc(
+        doc(db, "purchases", `${currentUser.uid}_${bookId}`),
+      );
       if (!purchaseDoc.exists()) {
-        navigate('/library');
+        navigate("/library");
         return;
       }
 
       // Load book content
-      const bookDoc = await getDoc(doc(db, 'books', bookId));
+      const bookDoc = await getDoc(doc(db, "books", bookId));
       if (bookDoc.exists()) {
         setBook({ ...bookDoc.data(), id: bookDoc.id } as BookContent);
       }
     } catch (error) {
-      console.error('Error loading book:', error);
-      navigate('/library');
+      console.error("Error loading book:", error);
+      navigate("/library");
     }
     setLoading(false);
   };
 
   const getPages = () => {
     if (!book) return [];
-    
-    const fullText = book.chapters 
-      ? book.chapters.map(ch => `${ch.title}\n\n${ch.content}`).join('\n\n---\n\n')
+
+    const fullText = book.chapters
+      ? book.chapters
+          .map((ch) => `${ch.title}\n\n${ch.content}`)
+          .join("\n\n---\n\n")
       : book.content;
-    
+
     const words = fullText.split(/\s+/);
     const pages = [];
-    
+
     for (let i = 0; i < words.length; i += WORDS_PER_PAGE) {
-      pages.push(words.slice(i, i + WORDS_PER_PAGE).join(' '));
+      pages.push(words.slice(i, i + WORDS_PER_PAGE).join(" "));
     }
-    
+
     return pages;
   };
 
@@ -103,7 +107,9 @@ const ReadBook = () => {
         <div className="text-center">
           <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">Book Not Found</h2>
-          <p className="text-gray-400">This book is not available in your library.</p>
+          <p className="text-gray-400">
+            This book is not available in your library.
+          </p>
         </div>
       </div>
     );
@@ -121,18 +127,18 @@ const ReadBook = () => {
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <button
-                onClick={() => navigate('/library')}
+                onClick={() => navigate("/library")}
                 className="flex items-center text-gray-400 hover:text-white transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Library
               </button>
-              
+
               <div className="text-center">
                 <h1 className="text-2xl font-bold text-white">{book.title}</h1>
                 <p className="text-gray-400">by {book.author}</p>
               </div>
-              
+
               <div className="text-gray-400 text-sm">
                 Page {currentPage + 1} of {totalPages}
               </div>
@@ -143,7 +149,7 @@ const ReadBook = () => {
               <div className="p-8">
                 <div className="prose prose-invert max-w-none">
                   <div className="text-gray-300 leading-relaxed whitespace-pre-wrap text-lg">
-                    {pages[currentPage] || 'Content not available'}
+                    {pages[currentPage] || "Content not available"}
                   </div>
                 </div>
               </div>
@@ -163,15 +169,15 @@ const ReadBook = () => {
                   {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => {
                     const pageIndex = Math.floor(currentPage / 10) * 10 + i;
                     if (pageIndex >= totalPages) return null;
-                    
+
                     return (
                       <button
                         key={pageIndex}
                         onClick={() => setCurrentPage(pageIndex)}
                         className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
                           currentPage === pageIndex
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                         }`}
                       >
                         {pageIndex + 1}
@@ -194,9 +200,11 @@ const ReadBook = () => {
             {/* Progress Bar */}
             <div className="mt-6">
               <div className="w-full bg-gray-700 rounded-full h-2">
-                <div 
+                <div
                   className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
+                  style={{
+                    width: `${((currentPage + 1) / totalPages) * 100}%`,
+                  }}
                 ></div>
               </div>
               <div className="text-center text-gray-400 text-sm mt-2">

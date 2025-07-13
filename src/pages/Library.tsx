@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../firebase';
-import { BookOpen, Download, Eye, Star } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import ProtectedRoute from '../components/ProtectedRoute';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useAuth } from "../contexts/AuthContext";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebase";
+import { BookOpen, Download, Eye, Star } from "lucide-react";
+import { Link } from "react-router-dom";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 interface PurchasedBook {
   id: string;
@@ -34,29 +34,31 @@ const Library = () => {
 
     try {
       const purchasesQuery = query(
-        collection(db, 'purchases'),
-        where('userId', '==', currentUser.uid)
+        collection(db, "purchases"),
+        where("userId", "==", currentUser.uid),
       );
       const purchasesSnapshot = await getDocs(purchasesQuery);
-      const purchasedBooks = purchasesSnapshot.docs.map(doc => ({
+      const purchasedBooks = purchasesSnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
-        purchaseDate: doc.data().purchaseDate?.toDate() || new Date()
+        purchaseDate: doc.data().purchaseDate?.toDate() || new Date(),
       })) as PurchasedBook[];
-      
+
       setBooks(purchasedBooks);
     } catch (error) {
-      console.error('Error loading purchased books:', error);
+      console.error("Error loading purchased books:", error);
     }
     setLoading(false);
   };
 
-  const exportBook = (book: PurchasedBook, format: 'pdf' | 'txt') => {
+  const exportBook = (book: PurchasedBook, format: "pdf" | "txt") => {
     // In a real app, this would download the actual file
     const content = `${book.title}\nby ${book.author}\n\n${book.description}\n\n[Book content would be here...]`;
-    const blob = new Blob([content], { type: format === 'pdf' ? 'application/pdf' : 'text/plain' });
+    const blob = new Blob([content], {
+      type: format === "pdf" ? "application/pdf" : "text/plain",
+    });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `${book.title}.${format}`;
     document.body.appendChild(a);
@@ -87,18 +89,24 @@ const Library = () => {
                 <BookOpen className="mr-3 w-10 h-10 text-blue-400" />
                 My Library
               </h1>
-              <p className="text-gray-400">Your purchased books and digital collection</p>
+              <p className="text-gray-400">
+                Your purchased books and digital collection
+              </p>
               <div className="mt-4 text-sm text-gray-400">
-                {books.length} book{books.length !== 1 ? 's' : ''} in your library
+                {books.length} book{books.length !== 1 ? "s" : ""} in your
+                library
               </div>
             </div>
 
             {books.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">📚</div>
-                <h3 className="text-xl font-bold text-white mb-2">Your Library is Empty</h3>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Your Library is Empty
+                </h3>
                 <p className="text-gray-400 mb-6">
-                  Purchase books from the Bookstore to start building your collection
+                  Purchase books from the Bookstore to start building your
+                  collection
                 </p>
                 <Link
                   to="/bookstore"
@@ -119,8 +127,8 @@ const Library = () => {
                   >
                     <div className="relative">
                       {book.coverUrl ? (
-                        <img 
-                          src={book.coverUrl} 
+                        <img
+                          src={book.coverUrl}
                           alt={book.title}
                           className="w-full h-48 object-cover"
                         />
@@ -129,22 +137,30 @@ const Library = () => {
                           <BookOpen className="w-12 h-12 text-white" />
                         </div>
                       )}
-                      
+
                       <div className="absolute top-2 right-2 bg-green-600 text-white px-2 py-1 rounded text-xs font-bold">
                         Owned
                       </div>
                     </div>
 
                     <div className="p-4">
-                      <h3 className="text-white font-bold text-lg mb-1 line-clamp-2">{book.title}</h3>
-                      <p className="text-gray-400 text-sm mb-2">by {book.author}</p>
-                      
-                      <p className="text-gray-300 text-sm mb-3 line-clamp-2">{book.description}</p>
-                      
+                      <h3 className="text-white font-bold text-lg mb-1 line-clamp-2">
+                        {book.title}
+                      </h3>
+                      <p className="text-gray-400 text-sm mb-2">
+                        by {book.author}
+                      </p>
+
+                      <p className="text-gray-300 text-sm mb-3 line-clamp-2">
+                        {book.description}
+                      </p>
+
                       {book.rating && (
                         <div className="flex items-center space-x-1 mb-3">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                          <span className="text-white text-sm">{book.rating.toFixed(1)}</span>
+                          <span className="text-white text-sm">
+                            {book.rating.toFixed(1)}
+                          </span>
                         </div>
                       )}
 
@@ -160,17 +176,17 @@ const Library = () => {
                           <Eye className="w-4 h-4 mr-2" />
                           Read Book
                         </Link>
-                        
+
                         <div className="flex space-x-2">
                           <button
-                            onClick={() => exportBook(book, 'txt')}
+                            onClick={() => exportBook(book, "txt")}
                             className="flex-1 bg-gray-600 text-white py-2 px-3 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center text-sm"
                           >
                             <Download className="w-3 h-3 mr-1" />
                             TXT
                           </button>
                           <button
-                            onClick={() => exportBook(book, 'pdf')}
+                            onClick={() => exportBook(book, "pdf")}
                             className="flex-1 bg-gray-600 text-white py-2 px-3 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center text-sm"
                           >
                             <Download className="w-3 h-3 mr-1" />

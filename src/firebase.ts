@@ -1,24 +1,29 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, setDoc, connectFirestoreEmulator } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
-import { getDatabase } from 'firebase/database';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  connectFirestoreEmulator,
+} from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+import { getDatabase } from "firebase/database";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
-console.log('VITE ENV:', import.meta.env);
+console.log("VITE ENV:", import.meta.env);
 
 // Environment variable validation with comprehensive logging
 const validateEnvVars = () => {
   const required = [
-    'VITE_FIREBASE_API_KEY',
-    'VITE_FIREBASE_AUTH_DOMAIN', 
-    'VITE_FIREBASE_PROJECT_ID',
-    'VITE_FIREBASE_STORAGE_BUCKET',
-    'VITE_FIREBASE_MESSAGING_SENDER_ID',
-    'VITE_FIREBASE_APP_ID',
-    'VITE_FIREBASE_MEASUREMENT_ID',
-    'VITE_FIREBASE_DATABASE_URL',
-    'VITE_RECAPTCHA_SITE_KEY'
+    "VITE_FIREBASE_API_KEY",
+    "VITE_FIREBASE_AUTH_DOMAIN",
+    "VITE_FIREBASE_PROJECT_ID",
+    "VITE_FIREBASE_STORAGE_BUCKET",
+    "VITE_FIREBASE_MESSAGING_SENDER_ID",
+    "VITE_FIREBASE_APP_ID",
+    "VITE_FIREBASE_MEASUREMENT_ID",
+    "VITE_FIREBASE_DATABASE_URL",
+    "VITE_RECAPTCHA_SITE_KEY",
   ];
 
   const envVars = {
@@ -29,35 +34,52 @@ const validateEnvVars = () => {
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || 'https://mystronium-default-rtdb.firebaseio.com',
-    recaptchaSiteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY
+    databaseURL:
+      import.meta.env.VITE_FIREBASE_DATABASE_URL ||
+      "https://mystronium-default-rtdb.firebaseio.com",
+    recaptchaSiteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
   };
 
-  const missing = required.filter(key => {
+  const missing = required.filter((key) => {
     const value = envVars[key as keyof typeof envVars];
-    return !value || value === 'your_firebase_api_key_here' || value.includes('your_');
+    return (
+      !value ||
+      value === "your_firebase_api_key_here" ||
+      value.includes("your_")
+    );
   });
 
   if (missing.length > 0 && import.meta.env.DEV) {
-    console.warn('⚠️ MYSTRONIUM DIAGNOSTIC: Missing Firebase environment variables:', missing);
-    console.warn('📝 Configure your Firebase project at: https://console.firebase.google.com/');
-    console.warn('📝 Update .env.local with your Firebase configuration values');
-    console.warn('🛠️ Running in demo mode with mock services for testing');
-    console.warn('📋 Current environment variables:', envVars);
+    console.warn(
+      "⚠️ MYSTRONIUM DIAGNOSTIC: Missing Firebase environment variables:",
+      missing,
+    );
+    console.warn(
+      "📝 Configure your Firebase project at: https://console.firebase.google.com/",
+    );
+    console.warn(
+      "📝 Update .env.local with your Firebase configuration values",
+    );
+    console.warn("🛠️ Running in demo mode with mock services for testing");
+    console.warn("📋 Current environment variables:", envVars);
     return false;
   }
 
   if (missing.length > 0 && !import.meta.env.DEV) {
-    throw new Error(`Missing required Firebase environment variables: ${missing.join(', ')}`);
+    throw new Error(
+      `Missing required Firebase environment variables: ${missing.join(", ")}`,
+    );
   }
 
   if (import.meta.env.DEV) {
-    console.log('✅ MYSTRONIUM DIAGNOSTIC: All Firebase environment variables present');
-    console.log('🔧 Firebase configuration loaded successfully');
-    console.log('🌐 Project ID:', envVars.projectId);
-    console.log('🔐 Auth Domain:', envVars.authDomain);
-    console.log('🗄️ Realtime Database:', envVars.databaseURL);
-    console.log('🔒 App Check enabled with reCAPTCHA v3');
+    console.log(
+      "✅ MYSTRONIUM DIAGNOSTIC: All Firebase environment variables present",
+    );
+    console.log("🔧 Firebase configuration loaded successfully");
+    console.log("🌐 Project ID:", envVars.projectId);
+    console.log("🔐 Auth Domain:", envVars.authDomain);
+    console.log("🗄️ Realtime Database:", envVars.databaseURL);
+    console.log("🔒 App Check enabled with reCAPTCHA v3");
   }
 
   return true;
@@ -70,14 +92,14 @@ const getFirebaseConfig = () => {
   if (!hasValidConfig) {
     // Demo config for development without Firebase
     return {
-      apiKey: 'demo-api-key',
-      authDomain: 'demo.firebaseapp.com',
-      projectId: 'demo-project',
-      storageBucket: 'demo.appspot.com',
-      messagingSenderId: '123456789',
-      appId: '1:123456789:web:demo',
-      measurementId: 'G-DEMO123',
-      databaseURL: 'https://mystronium-default-rtdb.firebaseio.com'
+      apiKey: "demo-api-key",
+      authDomain: "demo.firebaseapp.com",
+      projectId: "demo-project",
+      storageBucket: "demo.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:demo",
+      measurementId: "G-DEMO123",
+      databaseURL: "https://mystronium-default-rtdb.firebaseio.com",
     };
   }
 
@@ -89,7 +111,9 @@ const getFirebaseConfig = () => {
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || 'https://mystronium-default-rtdb.firebaseio.com'
+    databaseURL:
+      import.meta.env.VITE_FIREBASE_DATABASE_URL ||
+      "https://mystronium-default-rtdb.firebaseio.com",
   };
 };
 
@@ -103,14 +127,15 @@ let appCheck: any;
 
 try {
   const firebaseConfig = getFirebaseConfig();
-  
+
   if (import.meta.env.DEV) {
-    console.log('🚀 MYSTRONIUM DIAGNOSTIC: Initializing Firebase...');
-    console.log('📋 Config:', {
+    console.log("🚀 MYSTRONIUM DIAGNOSTIC: Initializing Firebase...");
+    console.log("📋 Config:", {
       projectId: firebaseConfig.projectId,
       authDomain: firebaseConfig.authDomain,
-      hasApiKey: !!firebaseConfig.apiKey && firebaseConfig.apiKey !== 'demo-api-key',
-      region: 'nam5'
+      hasApiKey:
+        !!firebaseConfig.apiKey && firebaseConfig.apiKey !== "demo-api-key",
+      region: "nam5",
     });
   }
 
@@ -130,18 +155,27 @@ try {
   if (import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
     try {
       appCheck = initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
-        isTokenAutoRefreshEnabled: true
+        provider: new ReCaptchaV3Provider(
+          import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+        ),
+        isTokenAutoRefreshEnabled: true,
       });
-      
+
       if (import.meta.env.DEV) {
-        console.log('🔒 MYSTRONIUM DIAGNOSTIC: App Check initialized with reCAPTCHA v3');
+        console.log(
+          "🔒 MYSTRONIUM DIAGNOSTIC: App Check initialized with reCAPTCHA v3",
+        );
       }
     } catch (appCheckError) {
-      console.warn('⚠️ MYSTRONIUM DIAGNOSTIC: App Check initialization failed:', appCheckError);
+      console.warn(
+        "⚠️ MYSTRONIUM DIAGNOSTIC: App Check initialization failed:",
+        appCheckError,
+      );
     }
   } else if (import.meta.env.DEV) {
-    console.warn('⚠️ MYSTRONIUM DIAGNOSTIC: VITE_RECAPTCHA_SITE_KEY not found - App Check disabled');
+    console.warn(
+      "⚠️ MYSTRONIUM DIAGNOSTIC: VITE_RECAPTCHA_SITE_KEY not found - App Check disabled",
+    );
   }
 
   // Configure Firestore for nam5 region
@@ -151,21 +185,23 @@ try {
   }
 
   if (import.meta.env.DEV) {
-    console.log('✅ MYSTRONIUM DIAGNOSTIC: Firebase initialized successfully');
-    console.log('🔧 Services available:', {
+    console.log("✅ MYSTRONIUM DIAGNOSTIC: Firebase initialized successfully");
+    console.log("🔧 Services available:", {
       auth: !!auth,
       db: !!db,
       storage: !!storage,
       realtimeDb: !!realtimeDb,
-      appCheck: !!appCheck
+      appCheck: !!appCheck,
     });
-    console.log('🌍 Region: nam5');
+    console.log("🌍 Region: nam5");
   }
 } catch (error) {
   if (import.meta.env.DEV) {
-    console.warn('🛠️ MYSTRONIUM DIAGNOSTIC: Firebase initialization failed, using mock services');
-    console.warn('❌ Error details:', error);
-    
+    console.warn(
+      "🛠️ MYSTRONIUM DIAGNOSTIC: Firebase initialization failed, using mock services",
+    );
+    console.warn("❌ Error details:", error);
+
     // Mock services for development
     app = {} as any;
     auth = {} as any;
@@ -182,8 +218,8 @@ try {
 const ensureFirebaseServices = () => {
   if (!auth || !db) {
     if (import.meta.env.DEV) {
-      console.warn('⚠️ MYSTRONIUM DIAGNOSTIC: Firebase services not available');
-      console.warn('🔧 Check your .env.local configuration');
+      console.warn("⚠️ MYSTRONIUM DIAGNOSTIC: Firebase services not available");
+      console.warn("🔧 Check your .env.local configuration");
     }
     return false;
   }
@@ -191,30 +227,35 @@ const ensureFirebaseServices = () => {
 };
 
 // Admin configuration
-const ADMIN_EMAIL = 'garetharjohns@gmail.com';
+const ADMIN_EMAIL = "garetharjohns@gmail.com";
 
 // User profile setup with comprehensive schema validation and Stripe integration
 const setupUserProfile = async (user: any) => {
   if (!ensureFirebaseServices() || !user) {
     if (import.meta.env.DEV) {
-      console.warn('⚠️ MYSTRONIUM DIAGNOSTIC: Cannot setup user profile - missing db or user');
+      console.warn(
+        "⚠️ MYSTRONIUM DIAGNOSTIC: Cannot setup user profile - missing db or user",
+      );
     }
     return;
   }
 
   try {
     if (import.meta.env.DEV) {
-      console.log('👤 MYSTRONIUM DIAGNOSTIC: Setting up user profile for:', user.email);
+      console.log(
+        "👤 MYSTRONIUM DIAGNOSTIC: Setting up user profile for:",
+        user.email,
+      );
     }
 
-    const userDoc = doc(db, 'users', user.uid);
+    const userDoc = doc(db, "users", user.uid);
     const userData = {
       uid: user.uid,
       email: user.email,
-      displayName: user.displayName || 'Gareth Johns',
+      displayName: user.displayName || "Gareth Johns",
       admin: user.email === ADMIN_EMAIL,
       creator: user.email === ADMIN_EMAIL,
-      subscription: 'free',
+      subscription: "free",
       vaultCredits: 1,
       loginStreak: 1,
       lastLogin: new Date(),
@@ -225,39 +266,49 @@ const setupUserProfile = async (user: any) => {
       // Stripe integration fields
       stripeCustomerId: null,
       stripeSubscriptionId: null,
-      subscriptionStatus: 'free',
+      subscriptionStatus: "free",
       currentPeriodEnd: null,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     await setDoc(userDoc, userData, { merge: true });
 
     if (import.meta.env.DEV) {
-      console.log('✅ MYSTRONIUM DIAGNOSTIC: User profile setup successful');
-      console.log('💳 Stripe integration ready for:', user.email);
-      
+      console.log("✅ MYSTRONIUM DIAGNOSTIC: User profile setup successful");
+      console.log("💳 Stripe integration ready for:", user.email);
+
       if (userData.admin) {
-        console.log('👑 MYSTRONIUM DIAGNOSTIC: Admin user detected:', user.email);
-        console.log('🔧 Admin privileges:', {
+        console.log(
+          "👑 MYSTRONIUM DIAGNOSTIC: Admin user detected:",
+          user.email,
+        );
+        console.log("🔧 Admin privileges:", {
           email: user.email,
           uid: user.uid,
           admin: userData.admin,
           creator: userData.creator,
           subscription: userData.subscription,
           vaultCredits: userData.vaultCredits,
-          stripeEnabled: !!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+          stripeEnabled: !!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
         });
       }
     }
   } catch (error: any) {
     if (import.meta.env.DEV) {
-      console.warn('⚠️ MYSTRONIUM DIAGNOSTIC: User profile setup failed:', error);
-      console.warn('🔧 This may be due to missing Firebase configuration or Firestore rules');
-      console.warn('🔧 Error details:', error.message);
-      
-      if (error.code === 'permission-denied') {
-        console.warn('🔒 Firestore security rules are blocking access');
-        console.warn('📋 Ensure rules allow authenticated users to write to users/{uid}');
+      console.warn(
+        "⚠️ MYSTRONIUM DIAGNOSTIC: User profile setup failed:",
+        error,
+      );
+      console.warn(
+        "🔧 This may be due to missing Firebase configuration or Firestore rules",
+      );
+      console.warn("🔧 Error details:", error.message);
+
+      if (error.code === "permission-denied") {
+        console.warn("🔒 Firestore security rules are blocking access");
+        console.warn(
+          "📋 Ensure rules allow authenticated users to write to users/{uid}",
+        );
       }
     }
   }
@@ -268,19 +319,24 @@ if (auth) {
   onAuthStateChanged(auth, (user) => {
     if (import.meta.env.DEV) {
       if (user) {
-        console.log('🔐 MYSTRONIUM DIAGNOSTIC: User authenticated:', user.email);
-        console.log('🆔 User UID:', user.uid);
-        console.log('👑 Admin check:', user.email === ADMIN_EMAIL);
-        console.log('🔒 App Check status:', appCheck ? 'Enabled' : 'Disabled');
+        console.log(
+          "🔐 MYSTRONIUM DIAGNOSTIC: User authenticated:",
+          user.email,
+        );
+        console.log("🆔 User UID:", user.uid);
+        console.log("👑 Admin check:", user.email === ADMIN_EMAIL);
+        console.log("🔒 App Check status:", appCheck ? "Enabled" : "Disabled");
       } else {
-        console.log('🔓 MYSTRONIUM DIAGNOSTIC: No user authenticated');
+        console.log("🔓 MYSTRONIUM DIAGNOSTIC: No user authenticated");
       }
     }
-    
+
     setupUserProfile(user);
   });
 } else if (import.meta.env.DEV) {
-  console.warn('⚠️ MYSTRONIUM DIAGNOSTIC: Auth service not available - running in demo mode');
+  console.warn(
+    "⚠️ MYSTRONIUM DIAGNOSTIC: Auth service not available - running in demo mode",
+  );
 }
 
 // Export the service check function for use in other components

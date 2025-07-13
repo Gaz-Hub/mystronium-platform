@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Gift, Copy, Users, Crown } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useUser } from '../contexts/UserContext';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Gift, Copy, Users, Crown } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { useUser } from "../contexts/UserContext";
+import toast from "react-hot-toast";
 
 const Referral = () => {
   const { currentUser } = useAuth();
   const { userProfile } = useUser();
   const [copied, setCopied] = useState(false);
-  
-  const inviteCode = currentUser 
+
+  const inviteCode = currentUser
     ? `VAULT-${currentUser.uid.substring(0, 6).toUpperCase()}`
-    : 'VAULT-SAMPLE';
+    : "VAULT-SAMPLE";
 
   const referralLink = `https://mystronium.com/register?ref=${inviteCode}`;
 
@@ -20,10 +20,10 @@ const Referral = () => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      toast.success('Copied to clipboard!');
+      toast.success("Copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      toast.error('Failed to copy');
+      toast.error("Failed to copy");
     }
   };
 
@@ -40,22 +40,30 @@ const Referral = () => {
               <Gift className="mr-3 w-10 h-10 text-pink-400" />
               Referral Program
             </h1>
-            <p className="text-gray-400">Invite friends and earn rewards together</p>
+            <p className="text-gray-400">
+              Invite friends and earn rewards together
+            </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Referral Info */}
             <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl border border-gray-600">
-              <h2 className="text-2xl font-bold text-white mb-6">How It Works</h2>
-              
+              <h2 className="text-2xl font-bold text-white mb-6">
+                How It Works
+              </h2>
+
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
                   <div className="bg-pink-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
                     1
                   </div>
                   <div>
-                    <h3 className="text-white font-medium mb-1">Share Your Code</h3>
-                    <p className="text-gray-400 text-sm">Send your unique referral code to friends</p>
+                    <h3 className="text-white font-medium mb-1">
+                      Share Your Code
+                    </h3>
+                    <p className="text-gray-400 text-sm">
+                      Send your unique referral code to friends
+                    </p>
                   </div>
                 </div>
 
@@ -64,8 +72,12 @@ const Referral = () => {
                     2
                   </div>
                   <div>
-                    <h3 className="text-white font-medium mb-1">Friends Sign Up</h3>
-                    <p className="text-gray-400 text-sm">They register using your referral code</p>
+                    <h3 className="text-white font-medium mb-1">
+                      Friends Sign Up
+                    </h3>
+                    <p className="text-gray-400 text-sm">
+                      They register using your referral code
+                    </p>
                   </div>
                 </div>
 
@@ -74,8 +86,12 @@ const Referral = () => {
                     3
                   </div>
                   <div>
-                    <h3 className="text-white font-medium mb-1">Earn Rewards</h3>
-                    <p className="text-gray-400 text-sm">Get 1 month free Premium when 3 friends upgrade</p>
+                    <h3 className="text-white font-medium mb-1">
+                      Earn Rewards
+                    </h3>
+                    <p className="text-gray-400 text-sm">
+                      Get 1 month free Premium when 3 friends upgrade
+                    </p>
                   </div>
                 </div>
               </div>
@@ -97,11 +113,15 @@ const Referral = () => {
             {/* Referral Code */}
             <div className="space-y-6">
               <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-600">
-                <h2 className="text-xl font-bold text-white mb-4">Your Referral Code</h2>
-                
+                <h2 className="text-xl font-bold text-white mb-4">
+                  Your Referral Code
+                </h2>
+
                 <div className="bg-gray-900 p-4 rounded-lg border border-gray-700 mb-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-mono font-bold text-pink-400">{inviteCode}</span>
+                    <span className="text-2xl font-mono font-bold text-pink-400">
+                      {inviteCode}
+                    </span>
                     <button
                       onClick={() => copyToClipboard(inviteCode)}
                       className="bg-pink-600 text-white p-2 rounded hover:bg-pink-700 transition-colors"
@@ -113,7 +133,9 @@ const Referral = () => {
 
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-white font-medium mb-2">Referral Link</label>
+                    <label className="block text-white font-medium mb-2">
+                      Referral Link
+                    </label>
                     <div className="flex">
                       <input
                         type="text"
@@ -124,12 +146,12 @@ const Referral = () => {
                       <button
                         onClick={() => copyToClipboard(referralLink)}
                         className={`px-4 py-3 rounded-r-lg font-medium transition-all ${
-                          copied 
-                            ? 'bg-green-600 text-white' 
-                            : 'bg-pink-600 text-white hover:bg-pink-700'
+                          copied
+                            ? "bg-green-600 text-white"
+                            : "bg-pink-600 text-white hover:bg-pink-700"
                         }`}
                       >
-                        {copied ? 'Copied!' : 'Copy'}
+                        {copied ? "Copied!" : "Copy"}
                       </button>
                     </div>
                   </div>
@@ -141,7 +163,7 @@ const Referral = () => {
                   <Users className="w-5 h-5 mr-2" />
                   Your Stats
                 </h2>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
                     <p className="text-2xl font-bold text-pink-400">0</p>
@@ -158,7 +180,10 @@ const Referral = () => {
                     Progress: 0/3 referrals for your next free month
                   </p>
                   <div className="w-full bg-gray-600 rounded-full h-2 mt-2">
-                    <div className="bg-pink-600 h-2 rounded-full" style={{ width: '0%' }}></div>
+                    <div
+                      className="bg-pink-600 h-2 rounded-full"
+                      style={{ width: "0%" }}
+                    ></div>
                   </div>
                 </div>
               </div>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { runComprehensiveDiagnostic } from '../utils/comprehensiveDiagnostic';
-import { comprehensiveDiagnostic } from '../utils/comprehensiveDiagnostic';
+import React, { useState, useEffect } from "react";
+import { runComprehensiveDiagnostic } from "../utils/comprehensiveDiagnostic";
+import { comprehensiveDiagnostic } from "../utils/comprehensiveDiagnostic";
 
 const Diagnostic: React.FC = () => {
   const [results, setResults] = useState<any>(null);
@@ -12,10 +12,10 @@ const Diagnostic: React.FC = () => {
     setError(null);
     try {
       const comprehensiveResults = await runComprehensiveDiagnostic();
-      
+
       setResults({
         comprehensive: comprehensiveResults,
-        summary: comprehensiveDiagnostic.getSummary()
+        summary: comprehensiveDiagnostic.getSummary(),
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -33,7 +33,9 @@ const Diagnostic: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-lg text-gray-600">Running MYSTRONIUM™ Diagnostic...</p>
+          <p className="mt-4 text-lg text-gray-600">
+            Running MYSTRONIUM™ Diagnostic...
+          </p>
         </div>
       </div>
     );
@@ -56,7 +58,9 @@ const Diagnostic: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-lg text-gray-600">No diagnostic results available</p>
+          <p className="text-lg text-gray-600">
+            No diagnostic results available
+          </p>
         </div>
       </div>
     );
@@ -77,7 +81,7 @@ const Diagnostic: React.FC = () => {
             disabled={loading}
             className="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 disabled:opacity-50"
           >
-            {loading ? 'Running...' : 'Run Diagnostic'}
+            {loading ? "Running..." : "Run Diagnostic"}
           </button>
         </div>
 
@@ -91,29 +95,57 @@ const Diagnostic: React.FC = () => {
 
         {/* Comprehensive Results */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Comprehensive Diagnostic</h2>
-          
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Comprehensive Diagnostic
+          </h2>
+
           <div className="grid md:grid-cols-2 gap-6">
             {/* Firebase */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">🔥 Firebase</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                🔥 Firebase
+              </h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Configured:</span>
-                  <span className={results.comprehensive.firebase.configuration.configured ? 'text-green-600' : 'text-red-600'}>
-                    {results.comprehensive.firebase.configuration.configured ? '✅' : '❌'}
+                  <span
+                    className={
+                      results.comprehensive.firebase.configuration.configured
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }
+                  >
+                    {results.comprehensive.firebase.configuration.configured
+                      ? "✅"
+                      : "❌"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>App Check:</span>
-                  <span className={results.comprehensive.firebase.appCheck.enforced ? 'text-green-600' : 'text-red-600'}>
-                    {results.comprehensive.firebase.appCheck.enforced ? '✅' : '❌'}
+                  <span
+                    className={
+                      results.comprehensive.firebase.appCheck.enforced
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }
+                  >
+                    {results.comprehensive.firebase.appCheck.enforced
+                      ? "✅"
+                      : "❌"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Admin Access:</span>
-                  <span className={results.comprehensive.firebase.authentication.adminAccess ? 'text-green-600' : 'text-red-600'}>
-                    {results.comprehensive.firebase.authentication.adminAccess ? '✅' : '❌'}
+                  <span
+                    className={
+                      results.comprehensive.firebase.authentication.adminAccess
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }
+                  >
+                    {results.comprehensive.firebase.authentication.adminAccess
+                      ? "✅"
+                      : "❌"}
                   </span>
                 </div>
               </div>
@@ -121,24 +153,50 @@ const Diagnostic: React.FC = () => {
 
             {/* Stripe */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">💳 Stripe</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                💳 Stripe
+              </h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Configured:</span>
-                  <span className={results.comprehensive.stripe.configuration.configured ? 'text-green-600' : 'text-red-600'}>
-                    {results.comprehensive.stripe.configuration.configured ? '✅' : '❌'}
+                  <span
+                    className={
+                      results.comprehensive.stripe.configuration.configured
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }
+                  >
+                    {results.comprehensive.stripe.configuration.configured
+                      ? "✅"
+                      : "❌"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Webhook Accessible:</span>
-                  <span className={results.comprehensive.stripe.webhook.accessible ? 'text-green-600' : 'text-red-600'}>
-                    {results.comprehensive.stripe.webhook.accessible ? '✅' : '❌'}
+                  <span
+                    className={
+                      results.comprehensive.stripe.webhook.accessible
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }
+                  >
+                    {results.comprehensive.stripe.webhook.accessible
+                      ? "✅"
+                      : "❌"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Signature Validation:</span>
-                  <span className={results.comprehensive.stripe.webhook.signatureValidation ? 'text-green-600' : 'text-red-600'}>
-                    {results.comprehensive.stripe.webhook.signatureValidation ? '✅' : '❌'}
+                  <span
+                    className={
+                      results.comprehensive.stripe.webhook.signatureValidation
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }
+                  >
+                    {results.comprehensive.stripe.webhook.signatureValidation
+                      ? "✅"
+                      : "❌"}
                   </span>
                 </div>
               </div>
@@ -147,41 +205,61 @@ const Diagnostic: React.FC = () => {
         </div>
 
         {/* Issues */}
-        {(results.comprehensive.criticalIssues.length > 0 || 
-          results.comprehensive.errors.length > 0 || 
+        {(results.comprehensive.criticalIssues.length > 0 ||
+          results.comprehensive.errors.length > 0 ||
           results.comprehensive.warnings.length > 0) && (
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Issues Found</h2>
-            
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Issues Found
+            </h2>
+
             {results.comprehensive.criticalIssues.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-red-600 mb-2">🚨 Critical Issues</h3>
+                <h3 className="text-lg font-semibold text-red-600 mb-2">
+                  🚨 Critical Issues
+                </h3>
                 <ul className="space-y-1">
-                  {results.comprehensive.criticalIssues.map((issue: string, index: number) => (
-                    <li key={index} className="text-red-600">• {issue}</li>
-                  ))}
+                  {results.comprehensive.criticalIssues.map(
+                    (issue: string, index: number) => (
+                      <li key={index} className="text-red-600">
+                        • {issue}
+                      </li>
+                    ),
+                  )}
                 </ul>
               </div>
             )}
 
             {results.comprehensive.errors.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-red-600 mb-2">❌ Errors</h3>
+                <h3 className="text-lg font-semibold text-red-600 mb-2">
+                  ❌ Errors
+                </h3>
                 <ul className="space-y-1">
-                  {results.comprehensive.errors.map((error: string, index: number) => (
-                    <li key={index} className="text-red-600">• {error}</li>
-                  ))}
+                  {results.comprehensive.errors.map(
+                    (error: string, index: number) => (
+                      <li key={index} className="text-red-600">
+                        • {error}
+                      </li>
+                    ),
+                  )}
                 </ul>
               </div>
             )}
 
             {results.comprehensive.warnings.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-yellow-600 mb-2">⚠️ Warnings</h3>
+                <h3 className="text-lg font-semibold text-yellow-600 mb-2">
+                  ⚠️ Warnings
+                </h3>
                 <ul className="space-y-1">
-                  {results.comprehensive.warnings.map((warning: string, index: number) => (
-                    <li key={index} className="text-yellow-600">• {warning}</li>
-                  ))}
+                  {results.comprehensive.warnings.map(
+                    (warning: string, index: number) => (
+                      <li key={index} className="text-yellow-600">
+                        • {warning}
+                      </li>
+                    ),
+                  )}
                 </ul>
               </div>
             )}
@@ -191,18 +269,26 @@ const Diagnostic: React.FC = () => {
         {/* Recommendations */}
         {results.comprehensive.recommendations.length > 0 && (
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">💡 Recommendations</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              💡 Recommendations
+            </h2>
             <ul className="space-y-2">
-              {results.comprehensive.recommendations.map((rec: string, index: number) => (
-                <li key={index} className="text-gray-700">• {rec}</li>
-              ))}
+              {results.comprehensive.recommendations.map(
+                (rec: string, index: number) => (
+                  <li key={index} className="text-gray-700">
+                    • {rec}
+                  </li>
+                ),
+              )}
             </ul>
           </div>
         )}
 
         {/* Raw Data */}
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Raw Diagnostic Data</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Raw Diagnostic Data
+          </h2>
           <details>
             <summary className="cursor-pointer text-purple-600 font-medium mb-2">
               Click to expand raw data
@@ -217,4 +303,4 @@ const Diagnostic: React.FC = () => {
   );
 };
 
-export default Diagnostic; 
+export default Diagnostic;

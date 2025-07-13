@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../firebase';
-import { BookOpen, Star, Eye, Download, Plus } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useAuth } from "../contexts/AuthContext";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebase";
+import { BookOpen, Star, Eye, Download, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface UserBook {
   id: string;
@@ -14,7 +14,7 @@ interface UserBook {
   coverUrl?: string;
   chapters: number;
   totalWords: number;
-  status: 'draft' | 'published' | 'in-review';
+  status: "draft" | "published" | "in-review";
   createdAt: Date;
   rating?: number;
   views?: number;
@@ -37,33 +37,35 @@ const Books = () => {
     try {
       // Load user's created books
       const booksQuery = query(
-        collection(db, 'books'),
-        where('authorId', '==', currentUser.uid)
+        collection(db, "books"),
+        where("authorId", "==", currentUser.uid),
       );
       const booksSnapshot = await getDocs(booksQuery);
-      const userBooks = booksSnapshot.docs.map(doc => ({
+      const userBooks = booksSnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
-        createdAt: doc.data().createdAt?.toDate() || new Date()
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
       })) as UserBook[];
-      
+
       setBooks(userBooks);
     } catch (error) {
-      console.error('Error loading user books:', error);
+      console.error("Error loading user books:", error);
     }
     setLoading(false);
   };
 
   const getStatusBadge = (status: string) => {
     const styles = {
-      draft: 'bg-gray-600/20 text-gray-400',
-      published: 'bg-green-600/20 text-green-400',
-      'in-review': 'bg-yellow-600/20 text-yellow-400'
+      draft: "bg-gray-600/20 text-gray-400",
+      published: "bg-green-600/20 text-green-400",
+      "in-review": "bg-yellow-600/20 text-yellow-400",
     };
 
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${styles[status as keyof typeof styles]}`}>
-        {status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ')}
+      <span
+        className={`px-2 py-1 rounded text-xs font-medium ${styles[status as keyof typeof styles]}`}
+      >
+        {status.charAt(0).toUpperCase() + status.slice(1).replace("-", " ")}
       </span>
     );
   };
@@ -90,9 +92,11 @@ const Books = () => {
                 <BookOpen className="mr-3 w-10 h-10 text-gold" />
                 Your Literary Vault
               </h1>
-              <p className="text-gray-400">Manage your created books and literary works</p>
+              <p className="text-gray-400">
+                Manage your created books and literary works
+              </p>
             </div>
-            
+
             <Link
               to="/book-builder"
               className="bg-gradient-to-r from-gold to-lumen-blue text-black px-6 py-3 rounded-lg font-medium hover:from-yellow-400 hover:to-cyan-300 transition-all flex items-center"
@@ -105,9 +109,12 @@ const Books = () => {
           {books.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-8xl mb-6">📚</div>
-              <h3 className="text-2xl font-bold text-white mb-4">Your Vault Awaits</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Your Vault Awaits
+              </h3>
               <p className="text-gray-400 mb-8 max-w-md mx-auto">
-                Begin your journey as a digital scribe. Use Ghostscribe™ to forge your first literary creation.
+                Begin your journey as a digital scribe. Use Ghostscribe™ to
+                forge your first literary creation.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
@@ -136,8 +143,8 @@ const Books = () => {
                 >
                   <div className="relative">
                     {book.coverUrl ? (
-                      <img 
-                        src={book.coverUrl} 
+                      <img
+                        src={book.coverUrl}
                         alt={book.title}
                         className="w-full h-48 object-cover"
                       />
@@ -146,40 +153,54 @@ const Books = () => {
                         <BookOpen className="w-16 h-16 text-white" />
                       </div>
                     )}
-                    
+
                     <div className="absolute top-2 right-2">
                       {getStatusBadge(book.status)}
                     </div>
                   </div>
 
                   <div className="p-6">
-                    <h3 className="text-white font-bold text-lg mb-2 line-clamp-2">{book.title}</h3>
-                    <p className="text-gray-400 text-sm mb-3">by {book.author}</p>
-                    
-                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">{book.description}</p>
-                    
+                    <h3 className="text-white font-bold text-lg mb-2 line-clamp-2">
+                      {book.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm mb-3">
+                      by {book.author}
+                    </p>
+
+                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                      {book.description}
+                    </p>
+
                     <div className="grid grid-cols-2 gap-4 text-xs text-gray-400 mb-4">
                       <div>
                         <span className="block">Chapters:</span>
-                        <span className="text-white font-medium">{book.chapters}</span>
+                        <span className="text-white font-medium">
+                          {book.chapters}
+                        </span>
                       </div>
                       <div>
                         <span className="block">Words:</span>
-                        <span className="text-white font-medium">{book.totalWords.toLocaleString()}</span>
+                        <span className="text-white font-medium">
+                          {book.totalWords.toLocaleString()}
+                        </span>
                       </div>
                       {book.rating && (
                         <div>
                           <span className="block">Rating:</span>
                           <div className="flex items-center">
                             <Star className="w-3 h-3 text-yellow-400 fill-current mr-1" />
-                            <span className="text-white font-medium">{book.rating.toFixed(1)}</span>
+                            <span className="text-white font-medium">
+                              {book.rating.toFixed(1)}
+                            </span>
                           </div>
                         </div>
                       )}
                       {book.views && (
                         <div>
                           <span className="block">Views:</span>
-                          <span className="text-white font-medium">{book.views}</span>
+                          <span className="text-white font-medium">
+                            {book.views}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -191,7 +212,7 @@ const Books = () => {
                       >
                         Edit
                       </Link>
-                      {book.status === 'published' && (
+                      {book.status === "published" && (
                         <button className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition-colors">
                           <Download className="w-4 h-4" />
                         </button>

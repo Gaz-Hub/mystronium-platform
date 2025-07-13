@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { BookOpen, Plus, Download, Save, Edit, Trash2, Eye } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useUser } from '../contexts/UserContext';
-import toast from 'react-hot-toast';
-import ProtectedRoute from '../components/ProtectedRoute';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  BookOpen,
+  Plus,
+  Download,
+  Save,
+  Edit,
+  Trash2,
+  Eye,
+} from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { useUser } from "../contexts/UserContext";
+import toast from "react-hot-toast";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 interface Chapter {
   id: string;
@@ -28,23 +36,23 @@ const BookBuilder = () => {
   const { currentUser } = useAuth();
   const { userProfile } = useUser();
   const [book, setBook] = useState<Book>({
-    title: '',
-    author: userProfile?.displayName || 'Anonymous',
-    description: '',
+    title: "",
+    author: userProfile?.displayName || "Anonymous",
+    description: "",
     chapters: [],
     totalWords: 0,
     createdAt: new Date(),
-    lastModified: new Date()
+    lastModified: new Date(),
   });
 
-  const [chapterTitle, setChapterTitle] = useState('');
-  const [chapterText, setChapterText] = useState('');
+  const [chapterTitle, setChapterTitle] = useState("");
+  const [chapterText, setChapterText] = useState("");
   const [editingChapter, setEditingChapter] = useState<string | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
 
   // Load book from localStorage on component mount
   useEffect(() => {
-    const savedBook = localStorage.getItem('mystronium_book');
+    const savedBook = localStorage.getItem("mystronium_book");
     if (savedBook) {
       try {
         const parsed = JSON.parse(savedBook);
@@ -54,11 +62,11 @@ const BookBuilder = () => {
           lastModified: new Date(parsed.lastModified),
           chapters: parsed.chapters.map((ch: any) => ({
             ...ch,
-            createdAt: new Date(ch.createdAt)
-          }))
+            createdAt: new Date(ch.createdAt),
+          })),
         });
       } catch (error) {
-        console.error('Error loading saved book:', error);
+        console.error("Error loading saved book:", error);
       }
     }
   }, []);
@@ -66,21 +74,21 @@ const BookBuilder = () => {
   // Save book to localStorage whenever it changes
   useEffect(() => {
     if (book.title || book.chapters.length > 0) {
-      localStorage.setItem('mystronium_book', JSON.stringify(book));
+      localStorage.setItem("mystronium_book", JSON.stringify(book));
     }
   }, [book]);
 
   const updateBookMeta = (field: keyof Book, value: string) => {
-    setBook(prev => ({
+    setBook((prev) => ({
       ...prev,
       [field]: value,
-      lastModified: new Date()
+      lastModified: new Date(),
     }));
   };
 
   const addChapter = () => {
     if (!chapterTitle.trim() || !chapterText.trim()) {
-      toast.error('Please fill in both chapter title and text');
+      toast.error("Please fill in both chapter title and text");
       return;
     }
 
@@ -90,63 +98,68 @@ const BookBuilder = () => {
       title: chapterTitle.trim(),
       text: chapterText.trim(),
       wordCount,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
-    setBook(prev => ({
+    setBook((prev) => ({
       ...prev,
       chapters: [...prev.chapters, newChapter],
       totalWords: prev.totalWords + wordCount,
-      lastModified: new Date()
+      lastModified: new Date(),
     }));
 
-    setChapterTitle('');
-    setChapterText('');
-    toast.success('Chapter added successfully!');
+    setChapterTitle("");
+    setChapterText("");
+    toast.success("Chapter added successfully!");
   };
 
   const updateChapter = (id: string) => {
     if (!chapterTitle.trim() || !chapterText.trim()) {
-      toast.error('Please fill in both chapter title and text');
+      toast.error("Please fill in both chapter title and text");
       return;
     }
 
     const wordCount = chapterText.trim().split(/\s+/).length;
-    
-    setBook(prev => {
-      const oldChapter = prev.chapters.find(ch => ch.id === id);
+
+    setBook((prev) => {
+      const oldChapter = prev.chapters.find((ch) => ch.id === id);
       const oldWordCount = oldChapter?.wordCount || 0;
-      
+
       return {
         ...prev,
-        chapters: prev.chapters.map(ch => 
-          ch.id === id 
-            ? { ...ch, title: chapterTitle.trim(), text: chapterText.trim(), wordCount }
-            : ch
+        chapters: prev.chapters.map((ch) =>
+          ch.id === id
+            ? {
+                ...ch,
+                title: chapterTitle.trim(),
+                text: chapterText.trim(),
+                wordCount,
+              }
+            : ch,
         ),
         totalWords: prev.totalWords - oldWordCount + wordCount,
-        lastModified: new Date()
+        lastModified: new Date(),
       };
     });
 
     setEditingChapter(null);
-    setChapterTitle('');
-    setChapterText('');
-    toast.success('Chapter updated successfully!');
+    setChapterTitle("");
+    setChapterText("");
+    toast.success("Chapter updated successfully!");
   };
 
   const deleteChapter = (id: string) => {
-    const chapter = book.chapters.find(ch => ch.id === id);
+    const chapter = book.chapters.find((ch) => ch.id === id);
     if (!chapter) return;
 
-    setBook(prev => ({
+    setBook((prev) => ({
       ...prev,
-      chapters: prev.chapters.filter(ch => ch.id !== id),
+      chapters: prev.chapters.filter((ch) => ch.id !== id),
       totalWords: prev.totalWords - chapter.wordCount,
-      lastModified: new Date()
+      lastModified: new Date(),
     }));
 
-    toast.success('Chapter deleted');
+    toast.success("Chapter deleted");
   };
 
   const startEditingChapter = (chapter: Chapter) => {
@@ -157,28 +170,31 @@ const BookBuilder = () => {
 
   const cancelEditing = () => {
     setEditingChapter(null);
-    setChapterTitle('');
-    setChapterText('');
+    setChapterTitle("");
+    setChapterText("");
   };
 
-  const moveChapter = (index: number, direction: 'up' | 'down') => {
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
+  const moveChapter = (index: number, direction: "up" | "down") => {
+    const newIndex = direction === "up" ? index - 1 : index + 1;
     if (newIndex < 0 || newIndex >= book.chapters.length) return;
 
-    setBook(prev => {
+    setBook((prev) => {
       const newChapters = [...prev.chapters];
-      [newChapters[index], newChapters[newIndex]] = [newChapters[newIndex], newChapters[index]];
+      [newChapters[index], newChapters[newIndex]] = [
+        newChapters[newIndex],
+        newChapters[index],
+      ];
       return {
         ...prev,
         chapters: newChapters,
-        lastModified: new Date()
+        lastModified: new Date(),
       };
     });
   };
 
-  const exportBook = (format: 'txt' | 'json') => {
+  const exportBook = (format: "txt" | "json") => {
     if (book.chapters.length === 0) {
-      toast.error('Add some chapters first');
+      toast.error("Add some chapters first");
       return;
     }
 
@@ -186,21 +202,24 @@ const BookBuilder = () => {
     let filename: string;
     let mimeType: string;
 
-    if (format === 'txt') {
-      content = `${book.title}\nby ${book.author}\n\n${book.description}\n\n${'='.repeat(50)}\n\n`;
-      content += book.chapters.map((ch, i) => 
-        `Chapter ${i + 1}: ${ch.title}\n\n${ch.text}\n\n${'='.repeat(30)}\n\n`
-      ).join('');
-      filename = `${book.title || 'mystronium_book'}.txt`;
-      mimeType = 'text/plain';
+    if (format === "txt") {
+      content = `${book.title}\nby ${book.author}\n\n${book.description}\n\n${"=".repeat(50)}\n\n`;
+      content += book.chapters
+        .map(
+          (ch, i) =>
+            `Chapter ${i + 1}: ${ch.title}\n\n${ch.text}\n\n${"=".repeat(30)}\n\n`,
+        )
+        .join("");
+      filename = `${book.title || "mystronium_book"}.txt`;
+      mimeType = "text/plain";
     } else {
       content = JSON.stringify(book, null, 2);
-      filename = `${book.title || 'mystronium_book'}.json`;
-      mimeType = 'application/json';
+      filename = `${book.title || "mystronium_book"}.json`;
+      mimeType = "application/json";
     }
 
     const blob = new Blob([content], { type: mimeType });
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = filename;
     document.body.appendChild(link);
@@ -212,18 +231,22 @@ const BookBuilder = () => {
   };
 
   const clearBook = () => {
-    if (window.confirm('Are you sure you want to clear the entire book? This cannot be undone.')) {
+    if (
+      window.confirm(
+        "Are you sure you want to clear the entire book? This cannot be undone.",
+      )
+    ) {
       setBook({
-        title: '',
-        author: userProfile?.displayName || 'Anonymous',
-        description: '',
+        title: "",
+        author: userProfile?.displayName || "Anonymous",
+        description: "",
         chapters: [],
         totalWords: 0,
         createdAt: new Date(),
-        lastModified: new Date()
+        lastModified: new Date(),
       });
-      localStorage.removeItem('mystronium_book');
-      toast.success('Book cleared');
+      localStorage.removeItem("mystronium_book");
+      toast.success("Book cleared");
     }
   };
 
@@ -249,36 +272,46 @@ const BookBuilder = () => {
             {/* Book Metadata */}
             <div className="lg:col-span-1 space-y-6">
               <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-600">
-                <h2 className="text-xl font-bold text-white mb-4">Book Details</h2>
-                
+                <h2 className="text-xl font-bold text-white mb-4">
+                  Book Details
+                </h2>
+
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-white font-medium mb-2">Title</label>
+                    <label className="block text-white font-medium mb-2">
+                      Title
+                    </label>
                     <input
                       type="text"
                       value={book.title}
-                      onChange={(e) => updateBookMeta('title', e.target.value)}
+                      onChange={(e) => updateBookMeta("title", e.target.value)}
                       className="w-full bg-gray-800 text-white p-3 rounded-lg border border-gray-600 focus:border-green-500 focus:outline-none"
                       placeholder="Enter book title..."
                     />
                   </div>
 
                   <div>
-                    <label className="block text-white font-medium mb-2">Author</label>
+                    <label className="block text-white font-medium mb-2">
+                      Author
+                    </label>
                     <input
                       type="text"
                       value={book.author}
-                      onChange={(e) => updateBookMeta('author', e.target.value)}
+                      onChange={(e) => updateBookMeta("author", e.target.value)}
                       className="w-full bg-gray-800 text-white p-3 rounded-lg border border-gray-600 focus:border-green-500 focus:outline-none"
                       placeholder="Author name..."
                     />
                   </div>
 
                   <div>
-                    <label className="block text-white font-medium mb-2">Description</label>
+                    <label className="block text-white font-medium mb-2">
+                      Description
+                    </label>
                     <textarea
                       value={book.description}
-                      onChange={(e) => updateBookMeta('description', e.target.value)}
+                      onChange={(e) =>
+                        updateBookMeta("description", e.target.value)
+                      }
                       className="w-full h-24 bg-gray-800 text-white p-3 rounded-lg border border-gray-600 focus:border-green-500 focus:outline-none resize-none"
                       placeholder="Book description..."
                     />
@@ -288,20 +321,28 @@ const BookBuilder = () => {
 
               {/* Book Stats */}
               <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-600">
-                <h2 className="text-xl font-bold text-white mb-4">Statistics</h2>
-                
+                <h2 className="text-xl font-bold text-white mb-4">
+                  Statistics
+                </h2>
+
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-400">Chapters:</span>
-                    <span className="text-white font-medium">{book.chapters.length}</span>
+                    <span className="text-white font-medium">
+                      {book.chapters.length}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Total Words:</span>
-                    <span className="text-white font-medium">{book.totalWords.toLocaleString()}</span>
+                    <span className="text-white font-medium">
+                      {book.totalWords.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Est. Pages:</span>
-                    <span className="text-white font-medium">{Math.ceil(book.totalWords / 250)}</span>
+                    <span className="text-white font-medium">
+                      {Math.ceil(book.totalWords / 250)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Last Modified:</span>
@@ -315,19 +356,19 @@ const BookBuilder = () => {
               {/* Export Options */}
               <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-600">
                 <h2 className="text-xl font-bold text-white mb-4">Export</h2>
-                
+
                 <div className="space-y-3">
                   <button
-                    onClick={() => exportBook('txt')}
+                    onClick={() => exportBook("txt")}
                     disabled={book.chapters.length === 0}
                     className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors flex items-center justify-center"
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Export as TXT
                   </button>
-                  
+
                   <button
-                    onClick={() => exportBook('json')}
+                    onClick={() => exportBook("json")}
                     disabled={book.chapters.length === 0}
                     className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center justify-center"
                   >
@@ -341,7 +382,7 @@ const BookBuilder = () => {
                     className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center justify-center"
                   >
                     <Eye className="w-4 h-4 mr-2" />
-                    {previewMode ? 'Edit Mode' : 'Preview Mode'}
+                    {previewMode ? "Edit Mode" : "Preview Mode"}
                   </button>
 
                   <button
@@ -363,12 +404,14 @@ const BookBuilder = () => {
                   <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-600">
                     <h2 className="text-xl font-bold text-white mb-4 flex items-center">
                       <Plus className="w-5 h-5 mr-2" />
-                      {editingChapter ? 'Edit Chapter' : 'Add New Chapter'}
+                      {editingChapter ? "Edit Chapter" : "Add New Chapter"}
                     </h2>
-                    
+
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-white font-medium mb-2">Chapter Title</label>
+                        <label className="block text-white font-medium mb-2">
+                          Chapter Title
+                        </label>
                         <input
                           type="text"
                           value={chapterTitle}
@@ -379,7 +422,9 @@ const BookBuilder = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white font-medium mb-2">Chapter Text</label>
+                        <label className="block text-white font-medium mb-2">
+                          Chapter Text
+                        </label>
                         <textarea
                           value={chapterText}
                           onChange={(e) => setChapterText(e.target.value)}
@@ -387,7 +432,10 @@ const BookBuilder = () => {
                           placeholder="Write your chapter content here..."
                         />
                         <div className="text-right text-gray-400 text-sm mt-1">
-                          Words: {chapterText.trim() ? chapterText.trim().split(/\s+/).length : 0}
+                          Words:{" "}
+                          {chapterText.trim()
+                            ? chapterText.trim().split(/\s+/).length
+                            : 0}
                         </div>
                       </div>
 
@@ -396,7 +444,9 @@ const BookBuilder = () => {
                           <>
                             <button
                               onClick={() => updateChapter(editingChapter)}
-                              disabled={!chapterTitle.trim() || !chapterText.trim()}
+                              disabled={
+                                !chapterTitle.trim() || !chapterText.trim()
+                              }
                               className="bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 transition-colors"
                             >
                               Update Chapter
@@ -411,7 +461,9 @@ const BookBuilder = () => {
                         ) : (
                           <button
                             onClick={addChapter}
-                            disabled={!chapterTitle.trim() || !chapterText.trim()}
+                            disabled={
+                              !chapterTitle.trim() || !chapterText.trim()
+                            }
                             className="bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 transition-colors"
                           >
                             Add Chapter
@@ -426,7 +478,7 @@ const BookBuilder = () => {
                     <h2 className="text-xl font-bold text-white mb-4">
                       Chapters ({book.chapters.length})
                     </h2>
-                    
+
                     <div className="space-y-4">
                       {book.chapters.length > 0 ? (
                         book.chapters.map((chapter, index) => (
@@ -443,14 +495,14 @@ const BookBuilder = () => {
                               </h3>
                               <div className="flex items-center space-x-2">
                                 <button
-                                  onClick={() => moveChapter(index, 'up')}
+                                  onClick={() => moveChapter(index, "up")}
                                   disabled={index === 0}
                                   className="text-gray-400 hover:text-white disabled:opacity-30"
                                 >
                                   ↑
                                 </button>
                                 <button
-                                  onClick={() => moveChapter(index, 'down')}
+                                  onClick={() => moveChapter(index, "down")}
                                   disabled={index === book.chapters.length - 1}
                                   className="text-gray-400 hover:text-white disabled:opacity-30"
                                 >
@@ -470,22 +522,28 @@ const BookBuilder = () => {
                                 </button>
                               </div>
                             </div>
-                            
+
                             <p className="text-gray-300 text-sm mb-2 line-clamp-3">
                               {chapter.text}
                             </p>
-                            
+
                             <div className="flex justify-between text-xs text-gray-400">
                               <span>{chapter.wordCount} words</span>
-                              <span>{chapter.createdAt.toLocaleDateString()}</span>
+                              <span>
+                                {chapter.createdAt.toLocaleDateString()}
+                              </span>
                             </div>
                           </motion.div>
                         ))
                       ) : (
                         <div className="text-center py-8">
                           <BookOpen className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                          <p className="text-gray-500 italic">No chapters yet</p>
-                          <p className="text-gray-600 text-sm">Add your first chapter above</p>
+                          <p className="text-gray-500 italic">
+                            No chapters yet
+                          </p>
+                          <p className="text-gray-600 text-sm">
+                            Add your first chapter above
+                          </p>
                         </div>
                       )}
                     </div>
@@ -496,10 +554,16 @@ const BookBuilder = () => {
                 <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl border border-gray-600">
                   <div className="prose prose-invert max-w-none">
                     <div className="text-center mb-8">
-                      <h1 className="text-4xl font-bold text-white mb-2">{book.title || 'Untitled Book'}</h1>
-                      <p className="text-xl text-gray-300 mb-4">by {book.author}</p>
+                      <h1 className="text-4xl font-bold text-white mb-2">
+                        {book.title || "Untitled Book"}
+                      </h1>
+                      <p className="text-xl text-gray-300 mb-4">
+                        by {book.author}
+                      </p>
                       {book.description && (
-                        <p className="text-gray-400 italic">{book.description}</p>
+                        <p className="text-gray-400 italic">
+                          {book.description}
+                        </p>
                       )}
                     </div>
 

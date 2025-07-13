@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ArrowLeft, Maximize2, Minimize2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ArrowLeft,
+  Maximize2,
+  Minimize2,
+} from "lucide-react";
 
 interface ComicPanel {
   id: string;
@@ -34,36 +40,51 @@ const ReadComic = () => {
   useEffect(() => {
     // Mock comic data - in real app, load from database
     const mockComic: Comic = {
-      id: id || '1',
-      title: 'The Digital Realm Chronicles',
-      author: 'VaultMaster_42',
-      description: 'A mystical journey through the MYSTRONIUM universe',
+      id: id || "1",
+      title: "The Digital Realm Chronicles",
+      author: "VaultMaster_42",
+      description: "A mystical journey through the MYSTRONIUM universe",
       panels: [
         {
-          id: '1',
-          imageUrl: 'https://picsum.photos/800/600?random=1',
-          text: 'In the beginning, there was only code...',
+          id: "1",
+          imageUrl: "https://picsum.photos/800/600?random=1",
+          text: "In the beginning, there was only code...",
           speechBubbles: [
-            { text: 'Welcome to the Digital Realm', x: 50, y: 20, character: 'Narrator' }
-          ]
+            {
+              text: "Welcome to the Digital Realm",
+              x: 50,
+              y: 20,
+              character: "Narrator",
+            },
+          ],
         },
         {
-          id: '2',
-          imageUrl: 'https://picsum.photos/800/600?random=2',
-          text: 'The Vault Engine awakened...',
+          id: "2",
+          imageUrl: "https://picsum.photos/800/600?random=2",
+          text: "The Vault Engine awakened...",
           speechBubbles: [
-            { text: 'I can feel the power flowing through me!', x: 30, y: 80, character: 'Hero' }
-          ]
+            {
+              text: "I can feel the power flowing through me!",
+              x: 30,
+              y: 80,
+              character: "Hero",
+            },
+          ],
         },
         {
-          id: '3',
-          imageUrl: 'https://picsum.photos/800/600?random=3',
-          text: 'And creativity was born.',
+          id: "3",
+          imageUrl: "https://picsum.photos/800/600?random=3",
+          text: "And creativity was born.",
           speechBubbles: [
-            { text: 'This is just the beginning...', x: 60, y: 30, character: 'Hero' }
-          ]
-        }
-      ]
+            {
+              text: "This is just the beginning...",
+              x: 60,
+              y: 30,
+              character: "Hero",
+            },
+          ],
+        },
+      ],
     };
 
     setComic(mockComic);
@@ -83,14 +104,14 @@ const ReadComic = () => {
   };
 
   const handleKeyPress = (e: KeyboardEvent) => {
-    if (e.key === 'ArrowRight') nextPanel();
-    if (e.key === 'ArrowLeft') prevPanel();
-    if (e.key === 'Escape') setFullscreen(false);
+    if (e.key === "ArrowRight") nextPanel();
+    if (e.key === "ArrowLeft") prevPanel();
+    if (e.key === "Escape") setFullscreen(false);
   };
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [currentPanel, comic]);
 
   if (loading) {
@@ -106,7 +127,9 @@ const ReadComic = () => {
       <div className="min-h-screen flex items-center justify-center bg-black text-white">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">Comic Not Found</h2>
-          <p className="text-gray-400">The comic you're looking for doesn't exist.</p>
+          <p className="text-gray-400">
+            The comic you're looking for doesn't exist.
+          </p>
         </div>
       </div>
     );
@@ -115,24 +138,26 @@ const ReadComic = () => {
   const currentPanelData = comic.panels[currentPanel];
 
   return (
-    <div className={`${fullscreen ? 'fixed inset-0 z-50' : 'min-h-screen'} bg-black text-white`}>
+    <div
+      className={`${fullscreen ? "fixed inset-0 z-50" : "min-h-screen"} bg-black text-white`}
+    >
       {/* Header */}
       {!fullscreen && (
         <div className="bg-gray-900 border-b border-gray-700 px-6 py-4">
           <div className="max-w-6xl mx-auto flex items-center justify-between">
             <button
-              onClick={() => navigate('/comics')}
+              onClick={() => navigate("/comics")}
               className="flex items-center text-gray-400 hover:text-white transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Comics
             </button>
-            
+
             <div className="text-center">
               <h1 className="text-xl font-bold text-white">{comic.title}</h1>
               <p className="text-gray-400 text-sm">by {comic.author}</p>
             </div>
-            
+
             <div className="text-gray-400 text-sm">
               Panel {currentPanel + 1} of {comic.panels.length}
             </div>
@@ -141,7 +166,9 @@ const ReadComic = () => {
       )}
 
       {/* Comic Panel */}
-      <div className={`${fullscreen ? 'h-full' : 'min-h-[calc(100vh-80px)]'} flex items-center justify-center p-4`}>
+      <div
+        className={`${fullscreen ? "h-full" : "min-h-[calc(100vh-80px)]"} flex items-center justify-center p-4`}
+      >
         <div className="relative max-w-4xl w-full">
           <motion.div
             key={currentPanel}
@@ -150,12 +177,12 @@ const ReadComic = () => {
             transition={{ duration: 0.3 }}
             className="relative bg-white rounded-lg overflow-hidden shadow-2xl"
           >
-            <img 
-              src={currentPanelData.imageUrl} 
+            <img
+              src={currentPanelData.imageUrl}
               alt={`Panel ${currentPanel + 1}`}
               className="w-full h-auto"
             />
-            
+
             {/* Speech Bubbles */}
             {currentPanelData.speechBubbles?.map((bubble, index) => (
               <div
@@ -164,12 +191,14 @@ const ReadComic = () => {
                 style={{
                   left: `${bubble.x}%`,
                   top: `${bubble.y}%`,
-                  transform: 'translate(-50%, -50%)'
+                  transform: "translate(-50%, -50%)",
                 }}
               >
                 <p className="text-sm font-medium">{bubble.text}</p>
                 {bubble.character && (
-                  <p className="text-xs text-gray-600 mt-1">- {bubble.character}</p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    - {bubble.character}
+                  </p>
                 )}
                 {/* Speech bubble tail */}
                 <div className="absolute bottom-0 left-1/2 transform translate-y-full -translate-x-1/2">
@@ -208,7 +237,11 @@ const ReadComic = () => {
             onClick={() => setFullscreen(!fullscreen)}
             className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-lg hover:bg-black/70 transition-all"
           >
-            {fullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            {fullscreen ? (
+              <Minimize2 className="w-4 h-4" />
+            ) : (
+              <Maximize2 className="w-4 h-4" />
+            )}
           </button>
         </div>
       </div>
@@ -219,9 +252,11 @@ const ReadComic = () => {
           <div className="max-w-6xl mx-auto">
             {/* Progress Bar */}
             <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
-              <div 
+              <div
                 className="bg-pink-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${((currentPanel + 1) / comic.panels.length) * 100}%` }}
+                style={{
+                  width: `${((currentPanel + 1) / comic.panels.length) * 100}%`,
+                }}
               ></div>
             </div>
 
@@ -232,13 +267,13 @@ const ReadComic = () => {
                   key={panel.id}
                   onClick={() => setCurrentPanel(index)}
                   className={`flex-shrink-0 w-16 h-12 rounded border-2 overflow-hidden transition-all ${
-                    currentPanel === index 
-                      ? 'border-pink-500 scale-110' 
-                      : 'border-gray-600 hover:border-gray-400'
+                    currentPanel === index
+                      ? "border-pink-500 scale-110"
+                      : "border-gray-600 hover:border-gray-400"
                   }`}
                 >
-                  <img 
-                    src={panel.imageUrl} 
+                  <img
+                    src={panel.imageUrl}
                     alt={`Panel ${index + 1}`}
                     className="w-full h-full object-cover"
                   />

@@ -1,5 +1,5 @@
-import React, { createContext, useContext, ReactNode } from 'react';
-import { useCreditProtection } from '../hooks/useCreditProtection';
+import React, { createContext, useContext, ReactNode } from "react";
+import { useCreditProtection } from "../hooks/useCreditProtection";
 
 interface CreditProtectionContextProps {
   canUseCredits: (amount?: number) => boolean;
@@ -12,9 +12,15 @@ interface CreditProtectionContextProps {
   forceDisableHighCostFeatures: () => void;
 }
 
-const CreditProtectionContext = createContext<CreditProtectionContextProps | undefined>(undefined);
+const CreditProtectionContext = createContext<
+  CreditProtectionContextProps | undefined
+>(undefined);
 
-export const CreditProtectionProvider = ({ children }: { children: ReactNode }) => {
+export const CreditProtectionProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const creditProtection = useCreditProtection();
 
   return (
@@ -27,7 +33,9 @@ export const CreditProtectionProvider = ({ children }: { children: ReactNode }) 
 export const useCreditProtectionContext = () => {
   const context = useContext(CreditProtectionContext);
   if (!context) {
-    throw new Error('useCreditProtectionContext must be used within CreditProtectionProvider');
+    throw new Error(
+      "useCreditProtectionContext must be used within CreditProtectionProvider",
+    );
   }
   return context;
 };

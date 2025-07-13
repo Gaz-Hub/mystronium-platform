@@ -1,58 +1,60 @@
-import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { useUser } from '../contexts/UserContext';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useUser } from "../contexts/UserContext";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Narrata = () => {
   const { currentUser } = useAuth();
   const { userProfile } = useUser();
-  const [text, setText] = useState('');
-  const [audioUrl, setAudioUrl] = useState('');
+  const [text, setText] = useState("");
+  const [audioUrl, setAudioUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
   const generateSpeech = async () => {
     if (!text.trim()) return;
-    
+
     if (!currentUser) {
-      toast.error('Please log in to use Narrata');
+      toast.error("Please log in to use Narrata");
       return;
     }
-    
+
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL',
+        "https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL",
         {
           text: text,
           voice_settings: {
             stability: 0.5,
             similarity_boost: 0.5,
             style: 0.3,
-            use_speaker_boost: true
-          }
+            use_speaker_boost: true,
+          },
         },
         {
           headers: {
-            'xi-api-key': import.meta.env.VITE_ELEVENLABS_API_KEY,
-            'Content-Type': 'application/json'
+            "xi-api-key": import.meta.env.VITE_ELEVENLABS_API_KEY,
+            "Content-Type": "application/json",
           },
-          responseType: 'blob'
-        }
+          responseType: "blob",
+        },
       );
-      
-      const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
+
+      const audioBlob = new Blob([response.data], { type: "audio/mpeg" });
       const audioUrl = URL.createObjectURL(audioBlob);
       setAudioUrl(audioUrl);
-      toast.success('Voice generated successfully!');
+      toast.success("Voice generated successfully!");
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       if (error.response?.status === 401) {
-        toast.error('API key invalid. Please check your ElevenLabs API configuration.');
+        toast.error(
+          "API key invalid. Please check your ElevenLabs API configuration.",
+        );
       } else if (error.response?.status === 429) {
-        toast.error('Rate limit exceeded. Please try again in a moment.');
+        toast.error("Rate limit exceeded. Please try again in a moment.");
       } else {
-        toast.error('Error generating voice. Please try again.');
+        toast.error("Error generating voice. Please try again.");
       }
     }
     setLoading(false);
@@ -68,7 +70,9 @@ const Narrata = () => {
 
         <div className="grid lg:grid-cols-2 gap-8">
           <div className="bg-gray-800/50 p-6 rounded-xl border border-gray-600">
-            <label className="block text-white font-medium mb-2">Text to Narrate</label>
+            <label className="block text-white font-medium mb-2">
+              Text to Narrate
+            </label>
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
@@ -80,12 +84,14 @@ const Narrata = () => {
               disabled={loading || !text.trim()}
               className="mt-4 w-full bg-gradient-to-r from-amber-600 to-orange-600 text-white py-3 px-6 rounded-lg font-medium hover:from-amber-700 hover:to-orange-700 disabled:opacity-50 transition-all"
             >
-              {loading ? 'Generating Speech...' : 'Generate Speech'}
+              {loading ? "Generating Speech..." : "Generate Speech"}
             </button>
           </div>
 
           <div className="bg-gray-800/50 p-6 rounded-xl border border-gray-600">
-            <label className="block text-white font-medium mb-4">Generated Audio</label>
+            <label className="block text-white font-medium mb-4">
+              Generated Audio
+            </label>
             <div className="bg-gray-900 p-8 rounded-lg border border-gray-700 h-80 flex flex-col items-center justify-center">
               {loading ? (
                 <div className="text-center">
@@ -96,18 +102,18 @@ const Narrata = () => {
                 <div className="w-full space-y-6">
                   <div className="text-center">
                     <div className="text-6xl mb-4">🎵</div>
-                    <p className="text-white mb-4">Audio generated successfully!</p>
+                    <p className="text-white mb-4">
+                      Audio generated successfully!
+                    </p>
                   </div>
-                  <audio 
-                    controls 
-                    src={audioUrl}
-                    className="w-full"
-                  >
+                  <audio controls src={audioUrl} className="w-full">
                     Your browser does not support the audio element.
                   </audio>
                 </div>
               ) : (
-                <p className="text-gray-500 italic">Generated audio will appear here...</p>
+                <p className="text-gray-500 italic">
+                  Generated audio will appear here...
+                </p>
               )}
             </div>
           </div>

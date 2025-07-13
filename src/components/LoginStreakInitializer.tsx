@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react';
-import { useLoginStreak } from '../hooks/useLoginStreak';
+import React, { useEffect } from "react";
+import { useLoginStreak } from "../hooks/useLoginStreak";
 
 interface LoginStreakInitializerProps {
   children: React.ReactNode;
 }
 
-const LoginStreakInitializer: React.FC<LoginStreakInitializerProps> = ({ children }) => {
+const LoginStreakInitializer: React.FC<LoginStreakInitializerProps> = ({
+  children,
+}) => {
   useLoginStreak();
-  
+
   return <>{children}</>;
 };
 

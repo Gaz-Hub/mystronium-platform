@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Construction, ArrowLeft, Clock, Star } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import React from "react";
+import { motion } from "framer-motion";
+import { Construction, ArrowLeft, Clock, Star } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 interface ComingSoonProps {
   feature?: string;
@@ -9,45 +9,50 @@ interface ComingSoonProps {
 
 const ComingSoon: React.FC<ComingSoonProps> = ({ feature }) => {
   const location = useLocation();
-  
+
   const getFeatureInfo = () => {
     const path = location.pathname;
-    
+
     switch (path) {
-      case '/codex-db':
+      case "/codex-db":
         return {
-          name: 'Codex Database',
-          icon: '🗄️',
-          description: 'Advanced lore management with AI-powered connections and timeline tracking',
-          eta: 'Q2 2025'
+          name: "Codex Database",
+          icon: "🗄️",
+          description:
+            "Advanced lore management with AI-powered connections and timeline tracking",
+          eta: "Q2 2025",
         };
-      case '/cartoon-engine':
+      case "/cartoon-engine":
         return {
-          name: 'Cartoon Engine',
-          icon: '🎬',
-          description: 'Transform your books into animated cartoons with AI video generation',
-          eta: 'Q3 2025'
+          name: "Cartoon Engine",
+          icon: "🎬",
+          description:
+            "Transform your books into animated cartoons with AI video generation",
+          eta: "Q3 2025",
         };
-      case '/creator-dashboard':
+      case "/creator-dashboard":
         return {
-          name: 'Creator Dashboard',
-          icon: '📊',
-          description: 'Advanced analytics, earnings tracking, and creator insights',
-          eta: 'Q2 2025'
+          name: "Creator Dashboard",
+          icon: "📊",
+          description:
+            "Advanced analytics, earnings tracking, and creator insights",
+          eta: "Q2 2025",
         };
-      case '/analytics':
+      case "/analytics":
         return {
-          name: 'Analytics Suite',
-          icon: '📈',
-          description: 'Deep insights into your content performance and audience engagement',
-          eta: 'Q2 2025'
+          name: "Analytics Suite",
+          icon: "📈",
+          description:
+            "Deep insights into your content performance and audience engagement",
+          eta: "Q2 2025",
         };
       default:
         return {
-          name: feature || 'Feature',
-          icon: '🚧',
-          description: 'This exciting new feature is currently under development',
-          eta: 'Coming Soon'
+          name: feature || "Feature",
+          icon: "🚧",
+          description:
+            "This exciting new feature is currently under development",
+          eta: "Coming Soon",
         };
     }
   };
@@ -71,19 +76,24 @@ const ComingSoon: React.FC<ComingSoonProps> = ({ feature }) => {
           >
             {featureInfo.icon}
           </motion.div>
-          
-          <h1 className="text-4xl font-bold text-white mb-4">{featureInfo.name}</h1>
+
+          <h1 className="text-4xl font-bold text-white mb-4">
+            {featureInfo.name}
+          </h1>
           <p className="text-gray-300 text-lg mb-8 leading-relaxed">
             {featureInfo.description}
           </p>
-          
+
           <div className="bg-blue-600/20 p-4 rounded-lg border border-blue-500/30 mb-8">
             <div className="flex items-center justify-center space-x-2 mb-2">
               <Clock className="w-5 h-5 text-blue-400" />
-              <span className="text-blue-300 font-medium">Expected Launch: {featureInfo.eta}</span>
+              <span className="text-blue-300 font-medium">
+                Expected Launch: {featureInfo.eta}
+              </span>
             </div>
             <p className="text-blue-200 text-sm">
-              We're working hard to bring you this feature. Join our newsletter to be notified when it launches!
+              We're working hard to bring you this feature. Join our newsletter
+              to be notified when it launches!
             </p>
           </div>
 
@@ -92,7 +102,7 @@ const ComingSoon: React.FC<ComingSoonProps> = ({ feature }) => {
               <Star className="mr-2 w-4 h-4" />
               Get Notified When Ready
             </button>
-            
+
             <Link
               to="/"
               className="flex items-center justify-center text-gray-400 hover:text-white transition-colors"

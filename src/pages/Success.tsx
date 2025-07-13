@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle, ArrowRight, Crown, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useUser } from '../contexts/UserContext';
-import toast from 'react-hot-toast';
+import React, { useEffect } from "react";
+import { motion } from "framer-motion";
+import { CheckCircle, ArrowRight, Crown, Zap } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
+import toast from "react-hot-toast";
 
 const Success = () => {
   const { updateUserProfile } = useUser();
@@ -13,10 +13,10 @@ const Success = () => {
     const upgradeSubscription = async () => {
       try {
         // In a real app, this would be handled by Stripe webhooks
-        await updateUserProfile({ subscription: 'premium' });
-        toast.success('Your subscription has been activated!');
+        await updateUserProfile({ subscription: "premium" });
+        toast.success("Your subscription has been activated!");
       } catch (error) {
-        console.error('Error updating subscription:', error);
+        console.error("Error updating subscription:", error);
       }
     };
 
@@ -40,17 +40,22 @@ const Success = () => {
           >
             <CheckCircle className="w-16 h-16 text-green-400 mx-auto" />
           </motion.div>
-          
-          <h1 className="text-3xl font-bold text-white mb-4">Payment Successful!</h1>
+
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Payment Successful!
+          </h1>
           <p className="text-gray-300 mb-6">
-            Welcome to MYSTRONIUM Premium! You now have access to unlimited AI tools and premium features. 
-            Start creating amazing content right away.
+            Welcome to MYSTRONIUM Premium! You now have access to unlimited AI
+            tools and premium features. Start creating amazing content right
+            away.
           </p>
-          
+
           <div className="bg-gradient-to-r from-yellow-600/20 to-orange-600/20 p-4 rounded-lg border border-yellow-500/30 mb-6">
             <div className="flex items-center justify-center space-x-2 mb-2">
               <Crown className="w-5 h-5 text-yellow-400" />
-              <span className="text-yellow-300 font-medium">Premium Features Unlocked</span>
+              <span className="text-yellow-300 font-medium">
+                Premium Features Unlocked
+              </span>
             </div>
             <ul className="text-yellow-200 text-sm space-y-1">
               <li>• Unlimited Vault Engine generations</li>
@@ -60,7 +65,7 @@ const Success = () => {
               <li>• Priority support</li>
             </ul>
           </div>
-          
+
           <div className="space-y-3">
             <Link
               to="/ghostscribe"
@@ -68,14 +73,14 @@ const Success = () => {
             >
               Start Writing with Ghostscribe
             </Link>
-            
+
             <Link
               to="/vault"
               className="block w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:from-cyan-700 hover:to-blue-700 transition-all"
             >
               Generate Art with Vault Engine
             </Link>
-            
+
             <Link
               to="/dashboard"
               className="flex items-center justify-center text-gray-400 hover:text-white transition-colors mt-4"

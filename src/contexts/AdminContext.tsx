@@ -1,7 +1,13 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { useAuth } from './AuthContext';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+import { useAuth } from "./AuthContext";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 interface AdminContextProps {
   isAdmin: boolean;
@@ -23,7 +29,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);
   const [godModeEnabled, setGodModeEnabled] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  
+
   // Check admin status from Firestore
   useEffect(() => {
     const checkAdminStatus = async () => {
@@ -34,23 +40,32 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 
       setLoading(true);
       try {
-        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-        
+        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          const adminStatus = userData.admin === true || currentUser.email === 'garetharjohns@gmail.com';
+          const adminStatus =
+            userData.admin === true ||
+            currentUser.email === "garetharjohns@gmail.com";
           setIsAdmin(adminStatus);
-          
+
           // Set admin status for garetharjohns@gmail.com if not already set
-          if (currentUser.email === 'garetharjohns@gmail.com' && !userData.admin) {
-            await setDoc(doc(db, 'users', currentUser.uid), { admin: true }, { merge: true });
+          if (
+            currentUser.email === "garetharjohns@gmail.com" &&
+            !userData.admin
+          ) {
+            await setDoc(
+              doc(db, "users", currentUser.uid),
+              { admin: true },
+              { merge: true },
+            );
           }
-        } else if (currentUser.email === 'garetharjohns@gmail.com') {
+        } else if (currentUser.email === "garetharjohns@gmail.com") {
           // Create admin user for garetharjohns@gmail.com
-          await setDoc(doc(db, 'users', currentUser.uid), { 
+          await setDoc(doc(db, "users", currentUser.uid), {
             admin: true,
             email: currentUser.email,
-            createdAt: new Date()
+            createdAt: new Date(),
           });
           setIsAdmin(true);
         }
@@ -66,24 +81,24 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 
   // Load God Mode state from localStorage on mount
   useEffect(() => {
-    const savedGodMode = localStorage.getItem('godModeEnabled');
-    if (savedGodMode === 'true') {
+    const savedGodMode = localStorage.getItem("godModeEnabled");
+    if (savedGodMode === "true") {
       setGodModeEnabled(true);
     }
   }, []);
 
   const toggleModule = (module: string) => {
     // Module toggle functionality - updates system configuration
-    setAdminData(prev => ({
+    setAdminData((prev) => ({
       ...prev,
-      [module]: !(prev as any)[module]
+      [module]: !(prev as any)[module],
     }));
   };
 
   const toggleGodMode = () => {
     const newState = !godModeEnabled;
     setGodModeEnabled(newState);
-    localStorage.setItem('godModeEnabled', newState.toString());
+    localStorage.setItem("godModeEnabled", newState.toString());
   };
 
   const getSystemStats = () => {
@@ -92,31 +107,33 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       totalApiCalls: 15623,
       stripeRevenue: 8945.67,
       totalSpend: 3421.89,
-      mostUsedTool: 'Ghostscribe',
-      activeUsers: 89
+      mostUsedTool: "Ghostscribe",
+      activeUsers: 89,
     };
   };
 
   const emergencyShutdown = () => {
     // Emergency shutdown functionality - disables all AI modules
-    setAdminData(prev => ({
+    setAdminData((prev) => ({
       ...prev,
-      emergencyMode: true
+      emergencyMode: true,
     }));
   };
 
   return (
-    <AdminContext.Provider value={{ 
-      isAdmin, 
-      loading, 
-      adminData, 
-      godModeEnabled,
-      setAdminData,
-      toggleModule,
-      toggleGodMode,
-      getSystemStats,
-      emergencyShutdown
-    }}>
+    <AdminContext.Provider
+      value={{
+        isAdmin,
+        loading,
+        adminData,
+        godModeEnabled,
+        setAdminData,
+        toggleModule,
+        toggleGodMode,
+        getSystemStats,
+        emergencyShutdown,
+      }}
+    >
       {children}
     </AdminContext.Provider>
   );
@@ -124,6 +141,6 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAdmin = () => {
   const context = useContext(AdminContext);
-  if (!context) throw new Error('useAdmin must be used within AdminProvider');
+  if (!context) throw new Error("useAdmin must be used within AdminProvider");
   return context;
 };

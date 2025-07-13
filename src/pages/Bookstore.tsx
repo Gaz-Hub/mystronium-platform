@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { collection, getDocs, query, where, orderBy, addDoc, updateDoc, doc, increment } from 'firebase/firestore';
-import { db } from '../firebase';
-import { BookOpen, Star, Search, Filter, Crown } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  addDoc,
+  updateDoc,
+  doc,
+  increment,
+} from "firebase/firestore";
+import { db } from "../firebase";
+import { BookOpen, Star, Search, Filter, Crown } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface Book {
   id: string;
@@ -25,13 +35,22 @@ const Bookstore = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedGenre, setSelectedGenre] = useState('all');
-  const [sortBy, setSortBy] = useState('featured');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState("all");
+  const [sortBy, setSortBy] = useState("featured");
 
   const genres = [
-    'all', 'fantasy', 'sci-fi', 'romance', 'mystery', 'thriller', 
-    'horror', 'adventure', 'drama', 'comedy', 'non-fiction'
+    "all",
+    "fantasy",
+    "sci-fi",
+    "romance",
+    "mystery",
+    "thriller",
+    "horror",
+    "adventure",
+    "drama",
+    "comedy",
+    "non-fiction",
   ];
 
   useEffect(() => {
@@ -45,20 +64,20 @@ const Bookstore = () => {
   const loadBooks = async () => {
     try {
       const booksQuery = query(
-        collection(db, 'books'),
-        where('approved', '==', true)
+        collection(db, "books"),
+        where("approved", "==", true),
       );
       const booksSnapshot = await getDocs(booksQuery);
-      const booksData = booksSnapshot.docs.map(doc => ({
+      const booksData = booksSnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
-        createdAt: doc.data().createdAt?.toDate() || new Date()
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
       })) as Book[];
-      
+
       setBooks(booksData);
     } catch (error) {
-      console.error('Error loading books:', error);
-      toast.error('Failed to load books');
+      console.error("Error loading books:", error);
+      toast.error("Failed to load books");
     }
     setLoading(false);
   };
@@ -68,40 +87,41 @@ const Bookstore = () => {
 
     // Filter by search term
     if (searchTerm) {
-      filtered = filtered.filter(book => 
-        book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.description.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (book) =>
+          book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          book.description.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     // Filter by genre
-    if (selectedGenre !== 'all') {
-      filtered = filtered.filter(book => book.genre === selectedGenre);
+    if (selectedGenre !== "all") {
+      filtered = filtered.filter((book) => book.genre === selectedGenre);
     }
 
     // Sort books
     switch (sortBy) {
-      case 'featured':
+      case "featured":
         filtered.sort((a, b) => {
           if (a.featured && !b.featured) return -1;
           if (!a.featured && b.featured) return 1;
           return b.sales - a.sales;
         });
         break;
-      case 'newest':
+      case "newest":
         filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
         break;
-      case 'price-low':
+      case "price-low":
         filtered.sort((a, b) => a.price - b.price);
         break;
-      case 'price-high':
+      case "price-high":
         filtered.sort((a, b) => b.price - a.price);
         break;
-      case 'rating':
+      case "rating":
         filtered.sort((a, b) => b.rating - a.rating);
         break;
-      case 'bestseller':
+      case "bestseller":
         filtered.sort((a, b) => b.sales - a.sales);
         break;
     }
@@ -129,7 +149,9 @@ const Bookstore = () => {
             <BookOpen className="mr-3 w-10 h-10 text-blue-400" />
             MYSTRONIUM Bookstore
           </h1>
-          <p className="text-gray-400">Discover amazing books created by our community</p>
+          <p className="text-gray-400">
+            Discover amazing books created by our community
+          </p>
         </div>
 
         {/* Filters and Search */}
@@ -151,9 +173,11 @@ const Bookstore = () => {
               onChange={(e) => setSelectedGenre(e.target.value)}
               className="bg-gray-800 text-white p-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
             >
-              {genres.map(genre => (
+              {genres.map((genre) => (
                 <option key={genre} value={genre}>
-                  {genre === 'all' ? 'All Genres' : genre.charAt(0).toUpperCase() + genre.slice(1)}
+                  {genre === "all"
+                    ? "All Genres"
+                    : genre.charAt(0).toUpperCase() + genre.slice(1)}
                 </option>
               ))}
             </select>
@@ -191,8 +215,8 @@ const Bookstore = () => {
                 <Link to={`/book/${book.id}`}>
                   <div className="relative">
                     {book.coverUrl ? (
-                      <img 
-                        src={book.coverUrl} 
+                      <img
+                        src={book.coverUrl}
                         alt={book.title}
                         className="w-full h-48 object-cover"
                       />
@@ -201,7 +225,7 @@ const Bookstore = () => {
                         <BookOpen className="w-12 h-12 text-white" />
                       </div>
                     )}
-                    
+
                     {book.featured && (
                       <div className="absolute top-2 left-2">
                         <div className="bg-yellow-500 text-black px-2 py-1 rounded-full text-xs font-bold flex items-center">
@@ -217,17 +241,25 @@ const Bookstore = () => {
                   </div>
 
                   <div className="p-4">
-                    <h3 className="text-white font-bold text-lg mb-1 line-clamp-2">{book.title}</h3>
-                    <p className="text-gray-400 text-sm mb-2">by {book.author}</p>
-                    
-                    <p className="text-gray-300 text-sm mb-3 line-clamp-2">{book.description}</p>
-                    
+                    <h3 className="text-white font-bold text-lg mb-1 line-clamp-2">
+                      {book.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm mb-2">
+                      by {book.author}
+                    </p>
+
+                    <p className="text-gray-300 text-sm mb-3 line-clamp-2">
+                      {book.description}
+                    </p>
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                        <span className="text-white text-sm">{book.rating.toFixed(1)}</span>
+                        <span className="text-white text-sm">
+                          {book.rating.toFixed(1)}
+                        </span>
                       </div>
-                      
+
                       <div className="text-gray-400 text-xs">
                         {book.sales} sales
                       </div>
@@ -246,8 +278,12 @@ const Bookstore = () => {
         ) : (
           <div className="text-center py-12">
             <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">No books found</h3>
-            <p className="text-gray-400">Try adjusting your search or filters</p>
+            <h3 className="text-xl font-bold text-white mb-2">
+              No books found
+            </h3>
+            <p className="text-gray-400">
+              Try adjusting your search or filters
+            </p>
           </div>
         )}
 
@@ -258,7 +294,9 @@ const Bookstore = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
-          <h3 className="text-2xl font-bold text-white mb-4">Ready to Publish Your Book?</h3>
+          <h3 className="text-2xl font-bold text-white mb-4">
+            Ready to Publish Your Book?
+          </h3>
           <p className="text-gray-300 mb-6">
             Join our community of creators and start earning from your stories
           </p>

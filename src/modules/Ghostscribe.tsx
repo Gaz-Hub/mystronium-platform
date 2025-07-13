@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useUser } from '../contexts/UserContext';
-import { useAdmin } from '../contexts/AdminContext';
-import { BookOpen, PenTool, Save, Trash2, Edit, Download, Share2, Sparkles, Zap, Crown } from 'lucide-react';
-import { promptTemplates } from '../utils/promptTemplates';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useUser } from "../contexts/UserContext";
+import { useAdmin } from "../contexts/AdminContext";
+import {
+  BookOpen,
+  PenTool,
+  Save,
+  Trash2,
+  Edit,
+  Download,
+  Share2,
+  Sparkles,
+  Zap,
+  Crown,
+} from "lucide-react";
+import { promptTemplates } from "../utils/promptTemplates";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 interface Chapter {
   id: string;
@@ -18,67 +29,72 @@ interface Chapter {
 const Ghostscribe = () => {
   const { userProfile } = useUser();
   const { godModeEnabled } = useAdmin();
-  const [prompt, setPrompt] = useState('');
-  const [generatedContent, setGeneratedContent] = useState('');
+  const [prompt, setPrompt] = useState("");
+  const [generatedContent, setGeneratedContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState("");
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [editingChapter, setEditingChapter] = useState<Chapter | null>(null);
-  const [chapterTitle, setChapterTitle] = useState('');
+  const [chapterTitle, setChapterTitle] = useState("");
 
   const generateContent = async () => {
     if (!prompt.trim()) {
-      toast.error('Please enter a prompt for content generation');
+      toast.error("Please enter a prompt for content generation");
       return;
     }
-    
+
     // Check credits unless God Mode is enabled
-    if (!godModeEnabled && (!userProfile || userProfile.subscription === 'free')) {
-      toast.error('Insufficient credits. Upgrade to Pro for unlimited content generation.');
+    if (
+      !godModeEnabled &&
+      (!userProfile || userProfile.subscription === "free")
+    ) {
+      toast.error(
+        "Insufficient credits. Upgrade to Pro for unlimited content generation.",
+      );
       return;
     }
-    
+
     setLoading(true);
-    
+
     try {
       // Generate content using Mistral API
       const response = await axios.post(
-        'https://api.mistral.ai/v1/chat/completions',
+        "https://api.mistral.ai/v1/chat/completions",
         {
-          model: 'mistral-large-latest',
+          model: "mistral-large-latest",
           messages: [
             {
-              role: 'system',
-              content: 'You are Ghostscribe, an AI writing assistant that creates compelling, engaging content. Write in a clear, professional style that captivates readers.'
+              role: "system",
+              content:
+                "You are Ghostscribe, an AI writing assistant that creates compelling, engaging content. Write in a clear, professional style that captivates readers.",
             },
             {
-              role: 'user',
-              content: prompt
-            }
+              role: "user",
+              content: prompt,
+            },
           ],
           max_tokens: 2000,
-          temperature: 0.8
+          temperature: 0.8,
         },
         {
           headers: {
-            'Authorization': `Bearer ${import.meta.env.VITE_MISTRAL_API_KEY}`,
-            'Content-Type': 'application/json'
-          }
-        }
+            Authorization: `Bearer ${import.meta.env.VITE_MISTRAL_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+        },
       );
 
       const content = response.data.choices[0].message.content;
       setGeneratedContent(content);
-      
+
       setLoading(false);
-      toast.success('Content generated successfully!', {
-        icon: '✍️',
+      toast.success("Content generated successfully!", {
+        icon: "✍️",
         style: {
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          color: "white",
         },
       });
-
     } catch (error) {
       // Fallback to demo content on API error
       const demoContent = `This is a sample generated content based on your prompt: "${prompt}". 
@@ -88,14 +104,14 @@ In a world where creativity knows no bounds, the power of storytelling transcend
 The art of writing is not merely about putting words on paper—it's about crafting experiences, building worlds, and connecting with readers on a profound level. Whether we're exploring the depths of human emotion or venturing into realms of pure imagination, our words become the bridge between thought and reality.
 
 As we continue this journey of creation, remember that every story has value, every idea has merit, and every voice deserves to be heard. Let your creativity flow freely, and watch as your words come to life on the page.`;
-      
+
       setGeneratedContent(demoContent);
       setLoading(false);
-      toast.success('Content generated! (Demo mode)', {
-        icon: '✍️',
+      toast.success("Content generated! (Demo mode)", {
+        icon: "✍️",
         style: {
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          color: "white",
         },
       });
     }
@@ -103,13 +119,13 @@ As we continue this journey of creation, remember that every story has value, ev
 
   const useTemplate = (template: string) => {
     setPrompt(template);
-    setSelectedTemplate('');
-    toast.success('Template applied! Customize and generate.');
+    setSelectedTemplate("");
+    toast.success("Template applied! Customize and generate.");
   };
 
   const saveChapter = () => {
     if (!chapterTitle.trim() || !generatedContent.trim()) {
-      toast.error('Please provide both title and content');
+      toast.error("Please provide both title and content");
       return;
     }
 
@@ -118,18 +134,18 @@ As we continue this journey of creation, remember that every story has value, ev
       title: chapterTitle,
       content: generatedContent,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
-    setChapters(prev => [newChapter, ...prev]);
-    setChapterTitle('');
-    setGeneratedContent('');
-    toast.success('Chapter saved successfully!');
+    setChapters((prev) => [newChapter, ...prev]);
+    setChapterTitle("");
+    setGeneratedContent("");
+    toast.success("Chapter saved successfully!");
   };
 
   const deleteChapter = (id: string) => {
-    setChapters(prev => prev.filter(chapter => chapter.id !== id));
-    toast.success('Chapter deleted');
+    setChapters((prev) => prev.filter((chapter) => chapter.id !== id));
+    toast.success("Chapter deleted");
   };
 
   const editChapter = (chapter: Chapter) => {
@@ -140,35 +156,42 @@ As we continue this journey of creation, remember that every story has value, ev
 
   const updateChapter = () => {
     if (!editingChapter || !chapterTitle.trim() || !generatedContent.trim()) {
-      toast.error('Please provide both title and content');
+      toast.error("Please provide both title and content");
       return;
     }
 
-    setChapters(prev => prev.map(chapter => 
-      chapter.id === editingChapter.id 
-        ? { ...chapter, title: chapterTitle, content: generatedContent, updatedAt: new Date() }
-        : chapter
-    ));
+    setChapters((prev) =>
+      prev.map((chapter) =>
+        chapter.id === editingChapter.id
+          ? {
+              ...chapter,
+              title: chapterTitle,
+              content: generatedContent,
+              updatedAt: new Date(),
+            }
+          : chapter,
+      ),
+    );
 
     setEditingChapter(null);
-    setChapterTitle('');
-    setGeneratedContent('');
-    toast.success('Chapter updated successfully!');
+    setChapterTitle("");
+    setGeneratedContent("");
+    toast.success("Chapter updated successfully!");
   };
 
   const downloadChapter = (chapter: Chapter) => {
     const content = `# ${chapter.title}\n\n${chapter.content}\n\nGenerated on: ${chapter.createdAt.toLocaleDateString()}`;
-    const blob = new Blob([content], { type: 'text/markdown' });
+    const blob = new Blob([content], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = `${chapter.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
+    link.download = `${chapter.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.md`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
-    toast.success('Chapter downloaded!');
+
+    toast.success("Chapter downloaded!");
   };
 
   return (
@@ -185,16 +208,18 @@ As we continue this journey of creation, remember that every story has value, ev
             <BookOpen className="mr-3 w-10 h-10 text-green-400" />
             ✍️ Ghostscribe™
           </h1>
-          <p className="text-gray-400 text-glyph mb-2">AI-powered content creation and writing assistance</p>
+          <p className="text-gray-400 text-glyph mb-2">
+            AI-powered content creation and writing assistance
+          </p>
           <div className="flex items-center justify-center space-x-4 text-sm">
             {godModeEnabled ? (
               <span className="text-yellow-400 font-bold flex items-center">
-                <Crown className="w-4 h-4 mr-1" />
-                ⚡ GOD MODE - Unlimited Access
+                <Crown className="w-4 h-4 mr-1" />⚡ GOD MODE - Unlimited Access
               </span>
             ) : (
               <span className="text-green-400">
-                Credits: {userProfile?.subscription === 'free' ? 'Limited' : '∞'}
+                Credits:{" "}
+                {userProfile?.subscription === "free" ? "Limited" : "∞"}
               </span>
             )}
             <span className="text-gray-400">|</span>
@@ -217,7 +242,9 @@ As we continue this journey of creation, remember that every story has value, ev
 
             {/* Prompt Templates */}
             <div className="mb-6">
-              <label className="block text-white font-medium mb-3">Writing Templates</label>
+              <label className="block text-white font-medium mb-3">
+                Writing Templates
+              </label>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {promptTemplates.map((template, index) => (
                   <button
@@ -225,7 +252,9 @@ As we continue this journey of creation, remember that every story has value, ev
                     onClick={() => useTemplate(template.value)}
                     className="w-full p-3 text-left bg-gray-700/50 hover:bg-gray-600/50 rounded-lg border border-gray-600 transition-all"
                   >
-                    <div className="font-medium text-white">{template.label}</div>
+                    <div className="font-medium text-white">
+                      {template.label}
+                    </div>
                     <div className="text-xs text-gray-400 truncate">
                       {template.value.substring(0, 80)}...
                     </div>
@@ -233,13 +262,16 @@ As we continue this journey of creation, remember that every story has value, ev
                 ))}
               </div>
               <p className="text-xs text-gray-500 mt-2">
-                💡 <strong>Tip:</strong> Click any template to auto-fill your prompt!
+                💡 <strong>Tip:</strong> Click any template to auto-fill your
+                prompt!
               </p>
             </div>
 
             {/* Chapter Title */}
             <div className="mb-6">
-              <label className="block text-white font-medium mb-2">Chapter Title</label>
+              <label className="block text-white font-medium mb-2">
+                Chapter Title
+              </label>
               <input
                 type="text"
                 value={chapterTitle}
@@ -251,7 +283,9 @@ As we continue this journey of creation, remember that every story has value, ev
 
             {/* Prompt Input */}
             <div className="mb-6">
-              <label className="block text-white font-medium mb-2">Content Prompt</label>
+              <label className="block text-white font-medium mb-2">
+                Content Prompt
+              </label>
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
@@ -286,7 +320,7 @@ As we continue this journey of creation, remember that every story has value, ev
                 className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg font-medium transition-all"
               >
                 <Save className="w-4 h-4 inline mr-2" />
-                {editingChapter ? 'Update Chapter' : 'Save Chapter'}
+                {editingChapter ? "Update Chapter" : "Save Chapter"}
               </button>
             )}
           </motion.div>
@@ -317,7 +351,9 @@ As we continue this journey of creation, remember that every story has value, ev
               <div className="cinematic-card p-6">
                 <div className="text-center py-12">
                   <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                  <p className="text-gray-400">No content generated yet. Start writing!</p>
+                  <p className="text-gray-400">
+                    No content generated yet. Start writing!
+                  </p>
                 </div>
               </div>
             )}
@@ -338,7 +374,9 @@ As we continue this journey of creation, remember that every story has value, ev
                       className="cinematic-card p-4"
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-white font-medium">{chapter.title}</h4>
+                        <h4 className="text-white font-medium">
+                          {chapter.title}
+                        </h4>
                         <div className="flex space-x-2">
                           <button
                             onClick={() => editChapter(chapter)}
@@ -364,8 +402,12 @@ As we continue this journey of creation, remember that every story has value, ev
                         {chapter.content.substring(0, 150)}...
                       </p>
                       <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>Created: {chapter.createdAt.toLocaleDateString()}</span>
-                        <span>Updated: {chapter.updatedAt.toLocaleDateString()}</span>
+                        <span>
+                          Created: {chapter.createdAt.toLocaleDateString()}
+                        </span>
+                        <span>
+                          Updated: {chapter.updatedAt.toLocaleDateString()}
+                        </span>
                       </div>
                     </motion.div>
                   ))}

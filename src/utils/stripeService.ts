@@ -1,6 +1,6 @@
-import { loadStripe } from '@stripe/stripe-js';
-import { auth, db } from '../firebase';
-import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { loadStripe } from "@stripe/stripe-js";
+import { auth, db } from "../firebase";
+import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 // Initialize Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -25,52 +25,65 @@ export class StripeService {
     try {
       this.stripe = await stripePromise;
       if (import.meta.env.DEV) {
-        console.log('💳 MYSTRONIUM STRIPE: Initialized successfully');
+        console.log("💳 MYSTRONIUM STRIPE: Initialized successfully");
       }
     } catch (error) {
-      console.error('❌ MYSTRONIUM STRIPE: Initialization failed:', error);
+      console.error("❌ MYSTRONIUM STRIPE: Initialization failed:", error);
     }
   }
 
   // Create checkout session for subscription
-  async createCheckoutSession(priceId: string, successUrl: string, cancelUrl: string) {
+  async createCheckoutSession(
+    priceId: string,
+    successUrl: string,
+    cancelUrl: string,
+  ) {
     try {
       const user = auth.currentUser;
       if (!user) {
-        throw new Error('User not authenticated');
+        throw new Error("User not authenticated");
       }
 
       if (import.meta.env.DEV) {
-        console.log('💳 MYSTRONIUM STRIPE: Creating checkout session for user:', user.email);
+        console.log(
+          "💳 MYSTRONIUM STRIPE: Creating checkout session for user:",
+          user.email,
+        );
       }
 
-      const response = await fetch('/.netlify/functions/stripe-webhook', {
-        method: 'POST',
+      const response = await fetch("/.netlify/functions/stripe-webhook", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          action: 'create-checkout-session',
+          action: "create-checkout-session",
           priceId,
           userId: user.uid,
           successUrl,
-          cancelUrl
-        })
+          cancelUrl,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create checkout session');
+        throw new Error("Failed to create checkout session");
       }
 
       const { sessionId } = await response.json();
-      
+
       if (import.meta.env.DEV) {
-        console.log('✅ MYSTRONIUM STRIPE: Checkout session created:', sessionId);
+        console.log(
+          "✅ MYSTRONIUM STRIPE: Checkout session created:",
+          sessionId,
+        );
       }
 
       return sessionId;
     } catch (error) {
-      console.error('❌ MYSTRONIUM STRIPE: Checkout session creation failed:', error);
+      console.error(
+        "❌ MYSTRONIUM STRIPE: Checkout session creation failed:",
+        error,
+      );
       throw error;
     }
   }
@@ -83,16 +96,16 @@ export class StripeService {
       }
 
       const { error } = await this.stripe.redirectToCheckout({ sessionId });
-      
+
       if (error) {
         throw error;
       }
 
       if (import.meta.env.DEV) {
-        console.log('🔄 MYSTRONIUM STRIPE: Redirecting to checkout...');
+        console.log("🔄 MYSTRONIUM STRIPE: Redirecting to checkout...");
       }
     } catch (error) {
-      console.error('❌ MYSTRONIUM STRIPE: Checkout redirect failed:', error);
+      console.error("❌ MYSTRONIUM STRIPE: Checkout redirect failed:", error);
       throw error;
     }
   }
@@ -102,38 +115,44 @@ export class StripeService {
     try {
       const user = auth.currentUser;
       if (!user) {
-        throw new Error('User not authenticated');
+        throw new Error("User not authenticated");
       }
 
       if (import.meta.env.DEV) {
-        console.log('💳 MYSTRONIUM STRIPE: Creating portal session for user:', user.email);
+        console.log(
+          "💳 MYSTRONIUM STRIPE: Creating portal session for user:",
+          user.email,
+        );
       }
 
-      const response = await fetch('/.netlify/functions/stripe-webhook', {
-        method: 'POST',
+      const response = await fetch("/.netlify/functions/stripe-webhook", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          action: 'create-portal-session',
+          action: "create-portal-session",
           customerId,
-          returnUrl
-        })
+          returnUrl,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create portal session');
+        throw new Error("Failed to create portal session");
       }
 
       const { url } = await response.json();
-      
+
       if (import.meta.env.DEV) {
-        console.log('✅ MYSTRONIUM STRIPE: Portal session created');
+        console.log("✅ MYSTRONIUM STRIPE: Portal session created");
       }
 
       return url;
     } catch (error) {
-      console.error('❌ MYSTRONIUM STRIPE: Portal session creation failed:', error);
+      console.error(
+        "❌ MYSTRONIUM STRIPE: Portal session creation failed:",
+        error,
+      );
       throw error;
     }
   }
@@ -143,37 +162,40 @@ export class StripeService {
     try {
       const user = auth.currentUser;
       if (!user) {
-        throw new Error('User not authenticated');
+        throw new Error("User not authenticated");
       }
 
-      const userDoc = doc(db, 'users', user.uid);
+      const userDoc = doc(db, "users", user.uid);
       const userSnapshot = await getDoc(userDoc);
-      
+
       if (!userSnapshot.exists()) {
-        throw new Error('User document not found');
+        throw new Error("User document not found");
       }
 
       const userData = userSnapshot.data();
-      
+
       if (import.meta.env.DEV) {
-        console.log('📊 MYSTRONIUM STRIPE: User subscription data:', {
+        console.log("📊 MYSTRONIUM STRIPE: User subscription data:", {
           subscription: userData.subscription,
           status: userData.subscriptionStatus,
           vaultCredits: userData.vaultCredits,
-          customerId: userData.stripeCustomerId
+          customerId: userData.stripeCustomerId,
         });
       }
 
       return {
-        subscription: userData.subscription || 'free',
-        status: userData.subscriptionStatus || 'free',
+        subscription: userData.subscription || "free",
+        status: userData.subscriptionStatus || "free",
         vaultCredits: userData.vaultCredits || 0,
         customerId: userData.stripeCustomerId,
         subscriptionId: userData.stripeSubscriptionId,
-        currentPeriodEnd: userData.currentPeriodEnd
+        currentPeriodEnd: userData.currentPeriodEnd,
       };
     } catch (error) {
-      console.error('❌ MYSTRONIUM STRIPE: Failed to get user subscription:', error);
+      console.error(
+        "❌ MYSTRONIUM STRIPE: Failed to get user subscription:",
+        error,
+      );
       throw error;
     }
   }
@@ -183,20 +205,23 @@ export class StripeService {
     try {
       const user = auth.currentUser;
       if (!user) {
-        throw new Error('User not authenticated');
+        throw new Error("User not authenticated");
       }
 
-      const userDoc = doc(db, 'users', user.uid);
+      const userDoc = doc(db, "users", user.uid);
       await updateDoc(userDoc, {
         ...subscriptionData,
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
 
       if (import.meta.env.DEV) {
-        console.log('✅ MYSTRONIUM STRIPE: User subscription updated locally');
+        console.log("✅ MYSTRONIUM STRIPE: User subscription updated locally");
       }
     } catch (error) {
-      console.error('❌ MYSTRONIUM STRIPE: Failed to update user subscription locally:', error);
+      console.error(
+        "❌ MYSTRONIUM STRIPE: Failed to update user subscription locally:",
+        error,
+      );
       throw error;
     }
   }
@@ -208,11 +233,11 @@ export class StripeService {
     const hasWebhookSecret = !!import.meta.env.VITE_STRIPE_WEBHOOK_SECRET;
 
     if (import.meta.env.DEV) {
-      console.log('🔧 MYSTRONIUM STRIPE: Configuration check:', {
+      console.log("🔧 MYSTRONIUM STRIPE: Configuration check:", {
         hasPublishableKey,
         hasSecretKey,
         hasWebhookSecret,
-        configured: hasPublishableKey && hasSecretKey && hasWebhookSecret
+        configured: hasPublishableKey && hasSecretKey && hasWebhookSecret,
       });
     }
 
@@ -223,48 +248,48 @@ export class StripeService {
   getSubscriptionPlans() {
     return [
       {
-        id: 'basic',
-        name: 'Basic Creator',
+        id: "basic",
+        name: "Basic Creator",
         price: 9.99,
         vaultCredits: 50,
         features: [
-          'Access to all creation tools',
-          '50 Vault Credits per month',
-          'Basic support',
-          'Standard export quality'
-        ]
+          "Access to all creation tools",
+          "50 Vault Credits per month",
+          "Basic support",
+          "Standard export quality",
+        ],
       },
       {
-        id: 'premium',
-        name: 'Premium Creator',
+        id: "premium",
+        name: "Premium Creator",
         price: 19.99,
         vaultCredits: 150,
         features: [
-          'Everything in Basic',
-          '150 Vault Credits per month',
-          'Priority support',
-          'High-quality exports',
-          'Advanced analytics',
-          'Custom branding'
-        ]
+          "Everything in Basic",
+          "150 Vault Credits per month",
+          "Priority support",
+          "High-quality exports",
+          "Advanced analytics",
+          "Custom branding",
+        ],
       },
       {
-        id: 'enterprise',
-        name: 'Enterprise',
+        id: "enterprise",
+        name: "Enterprise",
         price: 49.99,
         vaultCredits: 500,
         features: [
-          'Everything in Premium',
-          '500 Vault Credits per month',
-          'Dedicated support',
-          'Custom integrations',
-          'White-label options',
-          'Team management'
-        ]
-      }
+          "Everything in Premium",
+          "500 Vault Credits per month",
+          "Dedicated support",
+          "Custom integrations",
+          "White-label options",
+          "Team management",
+        ],
+      },
     ];
   }
 }
 
 // Export singleton instance
-export const stripeService = StripeService.getInstance(); 
+export const stripeService = StripeService.getInstance();

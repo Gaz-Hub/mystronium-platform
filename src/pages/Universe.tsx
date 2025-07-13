@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { useUser } from '../contexts/UserContext';
-import { useAdmin } from '../contexts/AdminContext';
-import { 
-  Globe, 
-  Clock, 
-  BookOpen, 
-  Palette, 
-  Mic, 
-  FileText, 
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useAuth } from "../contexts/AuthContext";
+import { useUser } from "../contexts/UserContext";
+import { useAdmin } from "../contexts/AdminContext";
+import {
+  Globe,
+  Clock,
+  BookOpen,
+  Palette,
+  Mic,
+  FileText,
   Star,
   Calendar,
   Users,
@@ -23,14 +23,14 @@ import {
   Target,
   Award,
   Gift,
-  BarChart3
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
+  BarChart3,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 interface TimelineEvent {
   id: string;
-  type: 'book' | 'card' | 'narration' | 'codex' | 'milestone';
+  type: "book" | "card" | "narration" | "codex" | "milestone";
   title: string;
   description: string;
   date: string;
@@ -54,7 +54,7 @@ const Universe = () => {
   const { currentUser } = useAuth();
   const { userProfile } = useUser();
   const { godModeEnabled } = useAdmin();
-  
+
   const [stats, setStats] = useState<UniverseStats>({
     totalEvents: 24,
     booksCreated: 3,
@@ -62,93 +62,114 @@ const Universe = () => {
     narrationsCreated: 5,
     codexEntries: 8,
     timelineLength: 45,
-    achievements: ['First Book', 'Card Collector', 'Voice Master', 'Lore Keeper'],
-    activeProjects: 2
+    achievements: [
+      "First Book",
+      "Card Collector",
+      "Voice Master",
+      "Lore Keeper",
+    ],
+    activeProjects: 2,
   });
 
   const [timeline, setTimeline] = useState<TimelineEvent[]>([
     {
-      id: '1',
-      type: 'book',
-      title: 'Digital Dreams',
-      description: 'Completed the first chapter of your sci-fi novel',
-      date: '2024-01-15',
-      icon: '📚',
-      color: 'blue',
-      tags: ['sci-fi', 'chapter-1', 'completed']
+      id: "1",
+      type: "book",
+      title: "Digital Dreams",
+      description: "Completed the first chapter of your sci-fi novel",
+      date: "2024-01-15",
+      icon: "📚",
+      color: "blue",
+      tags: ["sci-fi", "chapter-1", "completed"],
     },
     {
-      id: '2',
-      type: 'card',
-      title: 'Mythic Dragon',
-      description: 'Generated a legendary dragon card for your collection',
-      date: '2024-01-14',
-      icon: '🐉',
-      color: 'purple',
-      tags: ['mythic', 'dragon', 'collection']
+      id: "2",
+      type: "card",
+      title: "Mythic Dragon",
+      description: "Generated a legendary dragon card for your collection",
+      date: "2024-01-14",
+      icon: "🐉",
+      color: "purple",
+      tags: ["mythic", "dragon", "collection"],
     },
     {
-      id: '3',
-      type: 'narration',
-      title: 'Chapter 1 Audio',
-      description: 'Created voice narration for Digital Dreams Chapter 1',
-      date: '2024-01-13',
-      icon: '🎙️',
-      color: 'green',
-      tags: ['audio', 'narration', 'chapter-1']
+      id: "3",
+      type: "narration",
+      title: "Chapter 1 Audio",
+      description: "Created voice narration for Digital Dreams Chapter 1",
+      date: "2024-01-13",
+      icon: "🎙️",
+      color: "green",
+      tags: ["audio", "narration", "chapter-1"],
     },
     {
-      id: '4',
-      type: 'codex',
-      title: 'Anunnaki Lore',
-      description: 'Added ancient civilization lore to your codex',
-      date: '2024-01-12',
-      icon: '📜',
-      color: 'yellow',
-      tags: ['lore', 'ancient', 'civilization']
+      id: "4",
+      type: "codex",
+      title: "Anunnaki Lore",
+      description: "Added ancient civilization lore to your codex",
+      date: "2024-01-12",
+      icon: "📜",
+      color: "yellow",
+      tags: ["lore", "ancient", "civilization"],
     },
     {
-      id: '5',
-      type: 'milestone',
-      title: 'First Achievement',
-      description: 'Unlocked your first achievement: First Book',
-      date: '2024-01-11',
-      icon: '🏆',
-      color: 'orange',
-      tags: ['achievement', 'milestone']
-    }
+      id: "5",
+      type: "milestone",
+      title: "First Achievement",
+      description: "Unlocked your first achievement: First Book",
+      date: "2024-01-11",
+      icon: "🏆",
+      color: "orange",
+      tags: ["achievement", "milestone"],
+    },
   ]);
 
-  const [selectedFilter, setSelectedFilter] = useState<string>('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredTimeline = timeline.filter(event => {
-    const matchesFilter = selectedFilter === 'all' || event.type === selectedFilter;
-    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredTimeline = timeline.filter((event) => {
+    const matchesFilter =
+      selectedFilter === "all" || event.type === selectedFilter;
+    const matchesSearch =
+      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.tags.some((tag) =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
     return matchesFilter && matchesSearch;
   });
 
   const getEventColor = (color: string) => {
     switch (color) {
-      case 'blue': return 'border-blue-500 bg-blue-600/20';
-      case 'purple': return 'border-purple-500 bg-purple-600/20';
-      case 'green': return 'border-green-500 bg-green-600/20';
-      case 'yellow': return 'border-yellow-500 bg-yellow-600/20';
-      case 'orange': return 'border-orange-500 bg-orange-600/20';
-      default: return 'border-gray-500 bg-gray-600/20';
+      case "blue":
+        return "border-blue-500 bg-blue-600/20";
+      case "purple":
+        return "border-purple-500 bg-purple-600/20";
+      case "green":
+        return "border-green-500 bg-green-600/20";
+      case "yellow":
+        return "border-yellow-500 bg-yellow-600/20";
+      case "orange":
+        return "border-orange-500 bg-orange-600/20";
+      default:
+        return "border-gray-500 bg-gray-600/20";
     }
   };
 
   const getEventIcon = (type: string) => {
     switch (type) {
-      case 'book': return <BookOpen className="w-5 h-5" />;
-      case 'card': return <Palette className="w-5 h-5" />;
-      case 'narration': return <Mic className="w-5 h-5" />;
-      case 'codex': return <FileText className="w-5 h-5" />;
-      case 'milestone': return <Award className="w-5 h-5" />;
-      default: return <Star className="w-5 h-5" />;
+      case "book":
+        return <BookOpen className="w-5 h-5" />;
+      case "card":
+        return <Palette className="w-5 h-5" />;
+      case "narration":
+        return <Mic className="w-5 h-5" />;
+      case "codex":
+        return <FileText className="w-5 h-5" />;
+      case "milestone":
+        return <Award className="w-5 h-5" />;
+      default:
+        return <Star className="w-5 h-5" />;
     }
   };
 
@@ -170,7 +191,9 @@ const Universe = () => {
             Timeline • Lore • Achievements • Progress
           </p>
           <p className="text-blue-400">
-            {currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Creator'}
+            {currentUser?.displayName ||
+              currentUser?.email?.split("@")[0] ||
+              "Creator"}
           </p>
         </motion.div>
 
@@ -183,7 +206,9 @@ const Universe = () => {
           >
             <div className="flex items-center justify-center space-x-2">
               <Crown className="w-6 h-6 text-yellow-400" />
-              <span className="text-yellow-400 font-bold text-lg">⚡ GOD MODE ACTIVE</span>
+              <span className="text-yellow-400 font-bold text-lg">
+                ⚡ GOD MODE ACTIVE
+              </span>
               <Sparkles className="w-5 h-5 text-yellow-400" />
             </div>
             <p className="text-center text-yellow-300 text-sm mt-1">
@@ -204,11 +229,16 @@ const Universe = () => {
               <Clock className="w-8 h-8 text-blue-400" />
               <div>
                 <p className="text-gray-400 text-sm">Timeline Events</p>
-                <p className="text-2xl font-bold text-blue-400">{stats.totalEvents}</p>
+                <p className="text-2xl font-bold text-blue-400">
+                  {stats.totalEvents}
+                </p>
               </div>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
-              <div className="bg-blue-400 h-2 rounded-full" style={{ width: `${(stats.totalEvents / 50) * 100}%` }} />
+              <div
+                className="bg-blue-400 h-2 rounded-full"
+                style={{ width: `${(stats.totalEvents / 50) * 100}%` }}
+              />
             </div>
           </motion.div>
 
@@ -222,11 +252,16 @@ const Universe = () => {
               <Calendar className="w-8 h-8 text-purple-400" />
               <div>
                 <p className="text-gray-400 text-sm">Timeline Length</p>
-                <p className="text-2xl font-bold text-purple-400">{stats.timelineLength} days</p>
+                <p className="text-2xl font-bold text-purple-400">
+                  {stats.timelineLength} days
+                </p>
               </div>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
-              <div className="bg-purple-400 h-2 rounded-full" style={{ width: `${(stats.timelineLength / 365) * 100}%` }} />
+              <div
+                className="bg-purple-400 h-2 rounded-full"
+                style={{ width: `${(stats.timelineLength / 365) * 100}%` }}
+              />
             </div>
           </motion.div>
 
@@ -240,11 +275,16 @@ const Universe = () => {
               <Target className="w-8 h-8 text-green-400" />
               <div>
                 <p className="text-gray-400 text-sm">Active Projects</p>
-                <p className="text-2xl font-bold text-green-400">{stats.activeProjects}</p>
+                <p className="text-2xl font-bold text-green-400">
+                  {stats.activeProjects}
+                </p>
               </div>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
-              <div className="bg-green-400 h-2 rounded-full" style={{ width: `${(stats.activeProjects / 5) * 100}%` }} />
+              <div
+                className="bg-green-400 h-2 rounded-full"
+                style={{ width: `${(stats.activeProjects / 5) * 100}%` }}
+              />
             </div>
           </motion.div>
 
@@ -258,11 +298,16 @@ const Universe = () => {
               <Award className="w-8 h-8 text-yellow-400" />
               <div>
                 <p className="text-gray-400 text-sm">Achievements</p>
-                <p className="text-2xl font-bold text-yellow-400">{stats.achievements.length}</p>
+                <p className="text-2xl font-bold text-yellow-400">
+                  {stats.achievements.length}
+                </p>
               </div>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
-              <div className="bg-yellow-400 h-2 rounded-full" style={{ width: `${(stats.achievements.length / 10) * 100}%` }} />
+              <div
+                className="bg-yellow-400 h-2 rounded-full"
+                style={{ width: `${(stats.achievements.length / 10) * 100}%` }}
+              />
             </div>
           </motion.div>
         </div>
@@ -276,19 +321,21 @@ const Universe = () => {
         >
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="flex flex-wrap gap-2">
-              {['all', 'book', 'card', 'narration', 'codex', 'milestone'].map((filter) => (
-                <button
-                  key={filter}
-                  onClick={() => setSelectedFilter(filter)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    selectedFilter === filter
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  }`}
-                >
-                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
-                </button>
-              ))}
+              {["all", "book", "card", "narration", "codex", "milestone"].map(
+                (filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setSelectedFilter(filter)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      selectedFilter === filter
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    }`}
+                  >
+                    {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                  </button>
+                ),
+              )}
             </div>
             <div className="relative">
               <input
@@ -313,7 +360,7 @@ const Universe = () => {
             <Activity className="mr-2 w-6 h-6" />
             Your Creative Timeline
           </h2>
-          
+
           <div className="space-y-6">
             {filteredTimeline.map((event, index) => (
               <motion.div
@@ -329,7 +376,9 @@ const Universe = () => {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
-                      <h3 className="text-lg font-bold text-white">{event.title}</h3>
+                      <h3 className="text-lg font-bold text-white">
+                        {event.title}
+                      </h3>
                       <span className="text-xs bg-gray-600 px-2 py-1 rounded text-gray-300">
                         {event.type}
                       </span>
@@ -346,7 +395,9 @@ const Universe = () => {
                           </span>
                         ))}
                       </div>
-                      <span className="text-sm text-gray-400">{event.date}</span>
+                      <span className="text-sm text-gray-400">
+                        {event.date}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -362,17 +413,25 @@ const Universe = () => {
           transition={{ delay: 0.7 }}
           className="mt-8 grid md:grid-cols-3 gap-6"
         >
-          <Link to="/ghostscribe" className="cinematic-card p-6 hover:scale-105 transition-transform">
+          <Link
+            to="/ghostscribe"
+            className="cinematic-card p-6 hover:scale-105 transition-transform"
+          >
             <div className="flex items-center space-x-3">
               <BookOpen className="w-8 h-8 text-blue-400" />
               <div>
-                <h3 className="text-lg font-bold text-white">Create New Book</h3>
+                <h3 className="text-lg font-bold text-white">
+                  Create New Book
+                </h3>
                 <p className="text-gray-400 text-sm">Start your next story</p>
               </div>
             </div>
           </Link>
 
-          <Link to="/vault" className="cinematic-card p-6 hover:scale-105 transition-transform">
+          <Link
+            to="/vault"
+            className="cinematic-card p-6 hover:scale-105 transition-transform"
+          >
             <div className="flex items-center space-x-3">
               <Palette className="w-8 h-8 text-purple-400" />
               <div>
@@ -382,11 +441,16 @@ const Universe = () => {
             </div>
           </Link>
 
-          <Link to="/narrata" className="cinematic-card p-6 hover:scale-105 transition-transform">
+          <Link
+            to="/narrata"
+            className="cinematic-card p-6 hover:scale-105 transition-transform"
+          >
             <div className="flex items-center space-x-3">
               <Mic className="w-8 h-8 text-green-400" />
               <div>
-                <h3 className="text-lg font-bold text-white">Create Narration</h3>
+                <h3 className="text-lg font-bold text-white">
+                  Create Narration
+                </h3>
                 <p className="text-gray-400 text-sm">Bring stories to life</p>
               </div>
             </div>
@@ -397,4 +461,4 @@ const Universe = () => {
   );
 };
 
-export default Universe; 
+export default Universe;
